@@ -1301,7 +1301,9 @@ void MCPlayer::freetmp()
 {
 	if (istmpfile)
 	{
-		MCS_unlink(filename);
+		MCAutoStringRef t_filename;
+		/* UNCHECKED */ MCStringCreateWithCString(filename, &t_filename);
+		MCS_unlink(*t_filename);
 		delete filename;
 		filename = NULL;
 	}
@@ -4532,7 +4534,7 @@ void MCPlayer::stoprecording()
 #endif
 }
 
-void MCPlayer::recordsound(char *fname)
+void MCPlayer::recordsound(MCStringRef fname)
 {
 #ifdef FEATURE_QUICKTIME
 	if (qtstate != QT_INITTED)

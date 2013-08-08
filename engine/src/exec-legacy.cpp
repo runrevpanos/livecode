@@ -421,7 +421,7 @@ void MCLegacyExecImport(MCExecContext& ctxt, MCStringRef p_filename, bool p_is_s
 	MCU_watchcursor(ctxt.GetObject()->getstack(), True);
 	IO_handle t_stream;
 	
-	if ((t_stream = MCS_open(MCStringGetCString(p_filename), IO_READ_MODE, True, False, 0)) == NULL)
+	if ((t_stream = MCS_open(p_filename, kMCSOpenFileModeRead, True, False, 0)) == NULL)
 	{
 		ctxt . LegacyThrow(EE_IMPORT_CANTOPEN);		
 		// MW-2007-12-17: [[ Bug 266 ]] The watch cursor must be reset before we

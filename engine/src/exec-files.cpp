@@ -743,11 +743,7 @@ void MCFilesEvalShell(MCExecContext& ctxt, MCStringRef p_command, MCStringRef& r
 
 void MCFilesExecRename(MCExecContext& ctxt, MCStringRef p_from, MCStringRef p_to)
 {
-	const char *t_source;
-	t_source = MCStringGetCString(p_from);
-	const char *t_dest;
-	t_dest = MCStringGetCString(p_to);
-	if (!MCS_rename(t_source, t_dest))
+	if (!MCS_rename(p_from, p_to))
 		ctxt . SetTheResultToStaticCString("can't rename file");
 	else
 		ctxt . SetTheResultToEmpty();
@@ -787,7 +783,7 @@ void MCFilesExecLaunchUrl(MCExecContext& ctxt, MCStringRef p_url)
 
 	if (ctxt . EnsureProcessIsAllowed())
 	{
-		MCS_launch_url(MCStringGetCString(*t_new_url));
+		MCS_launch_url(*t_new_url);
 		return;
 	}
 
@@ -798,7 +794,7 @@ void MCFilesExecLaunchDocument(MCExecContext& ctxt, MCStringRef p_document)
 {
 	if (ctxt . EnsureProcessIsAllowed())
 	{
-		MCS_launch_document(MCStringGetCString(p_document));		
+		MCS_launch_document(p_document);		
 		return;
 	}
 
@@ -814,9 +810,12 @@ void MCFilesExecLaunchApp(MCExecContext& ctxt, MCNameRef p_app, MCStringRef p_do
 	}
 
 	uindex_t index;
+	//MCAutoStringRef p_empty;
+	//* UNCHECKED */ MCStringCreateWithCString(strclone(""), &p_empty);
+
 	if (!IO_findprocess(p_app, index))
 		MCS_startprocess(p_app, 
-							p_document == NULL ? strclone("") : MCStringGetCString(p_document), 
+							p_document == NULL ? kMCEmptyString : p_document, 
 							OM_NEITHER, False);
 	else
 		ctxt . SetTheResultToStaticCString("process is already open");
@@ -843,10 +842,10 @@ void MCFilesExecDeleteFile(MCExecContext& ctxt, MCStringRef p_target)
 			IO_closefile(*t_target_name);
 		}
 
-		done = MCS_unlink(MCStringGetCString(p_target));
+		done = MCS_unlink(p_target);
 	}
 	else if (MCS_exists(p_target, false))
-		done = MCS_rmdir(MCStringGetCString(p_target));
+		done = MCS_rmdir(p_target);
 
 	if (!done)
 		ctxt . SetTheResultToStaticCString("can't delete that file");
@@ -867,21 +866,22 @@ void MCFilesExecPerformOpen(MCExecContext& ctxt, MCNameRef p_name, int p_mode, b
 
 	IO_handle istream = NULL;
 	IO_handle ostream = NULL;
+	
 	switch (p_mode)
 	{
 	case OM_APPEND:
-		ostream = MCS_open(MCNameGetCString(p_name), IO_APPEND_MODE, False, p_is_driver, 0);
+		ostream = MCS_open(MCNameGetString(p_name), kMCSOpenFileModeAppend, False, p_is_driver, 0);
 		break;
 	case OM_NEITHER:
 		break;
 	case OM_READ:
-		istream = MCS_open(MCNameGetCString(p_name), IO_READ_MODE, True, p_is_driver, 0);
+		istream = MCS_open(MCNameGetString(p_name), kMCSOpenFileModeRead, True, p_is_driver, 0);
 		break;
 	case OM_WRITE:
-		ostream = MCS_open(MCNameGetCString(p_name), IO_WRITE_MODE, False, p_is_driver, 0);
+		ostream = MCS_open(MCNameGetString(p_name), kMCSOpenFileModeWrite, False, p_is_driver, 0);
 		break;
 	case OM_UPDATE:
-		istream = ostream = MCS_open(MCNameGetCString(p_name), IO_UPDATE_MODE, False, p_is_driver, 0);
+		istream = ostream = MCS_open(MCNameGetString(p_name), kMCSOpenFileModeUpdate, False, p_is_driver, 0);
 		break;
 	default:
 		break;
@@ -2026,7 +2026,7 @@ void MCFilesExecCreateFolder(MCExecContext& ctxt, MCStringRef p_filename)
 	if (!ctxt . EnsureDiskAccessIsAllowed())
 		return;
 	
-	if (!MCS_mkdir(MCStringGetCString(p_filename)))
+	if (!MCS_mkdir(p_filename))
 		ctxt . SetTheResultToStaticCString("can't create that directory");
 	else
 		ctxt . SetTheResultToEmpty();
@@ -2037,7 +2037,7 @@ void MCFilesExecCreateAlias(MCExecContext& ctxt, MCStringRef p_target_filename, 
 	if (!ctxt . EnsureDiskAccessIsAllowed())
 		return;
 
-	if (!MCS_createalias(MCStringGetCString(p_target_filename), MCStringGetCString(p_alias_filename)))
+	if (!MCS_createalias(p_target_filename, p_alias_filename))
 		ctxt . SetTheResultToStaticCString("can't create that alias");
 	else
 		ctxt . SetTheResultToEmpty();
