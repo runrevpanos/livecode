@@ -494,7 +494,7 @@ IO_stat MCDispatch::readstartupstack(IO_handle stream, MCStack*& r_stack)
 	MCStack *t_stack = nil;
 	/* UNCHECKED */ MCStackSecurityCreateStack(t_stack);
 	t_stack -> setparent(this);
-	t_stack -> setfilename(strclone(MCcmd));
+	t_stack -> setfilename(strdup(MCStringGetCString(MCcmd)));
 	if (IO_read_uint1(&type, stream) != IO_NORMAL
 	        || type != OT_STACK && type != OT_ENCRYPT_STACK
 	        || t_stack->load(stream, version, type) != IO_NORMAL)
@@ -853,8 +853,8 @@ IO_stat MCDispatch::dosavestack(MCStack *sptr, const MCStringRef p_fname)
 		MCresult->sets("can't open stack file, no permission");
 		return IO_ERROR;
 	}
-	char *oldfiletype = MCfiletype;
-	MCfiletype = (char *) MCStringGetCString(MCstackfiletype);
+	char *oldfiletype = strdup(MCStringGetCString(MCfiletype));
+	MCfiletype = MCValueRetain(MCstackfiletype);
 	
 	MCAutoStringRef t_backup;
 	/* UNCHECKED */ MCStringFormat(&t_backup, "%s~", MCStringGetCString(*t_linkname)); 
@@ -863,7 +863,7 @@ IO_stat MCDispatch::dosavestack(MCStack *sptr, const MCStringRef p_fname)
 	if (MCS_exists(*t_linkname, True) && !MCS_backup(*t_linkname, *t_backup))
 	{
 		MCresult->sets("can't open stack backup file");
-		MCfiletype = oldfiletype;
+		/* UNCHECKED */ MCStringCreateWithCString(oldfiletype, MCfiletype);
 		return IO_ERROR;
 	}
 	IO_handle stream;
@@ -872,10 +872,10 @@ IO_stat MCDispatch::dosavestack(MCStack *sptr, const MCStringRef p_fname)
 	{
 		MCresult->sets("can't open stack file");
 		cleanup(stream, *t_linkname, *t_backup);
-		MCfiletype = oldfiletype;
+		/* UNCHECKED */ MCStringCreateWithCString(oldfiletype, MCfiletype);
 		return IO_ERROR;
 	}
-	MCfiletype = oldfiletype;
+	/* UNCHECKED */ MCStringCreateWithCString(oldfiletype, MCfiletype);
 	MCString errstring = "Error writing stack (disk full?)";
 	
 	// MW-2012-03-04: [[ StackFile5500 ]] Work out what header to emit, and the size.
@@ -1598,7 +1598,7 @@ bool MCDispatch::loadexternal(const char *p_external)
 		if (!MCCStringClone(p_external, t_filename))
 			return false;
 	}
-	else if (!MCCStringFormat(t_filename, "%.*s/%s", strrchr(MCcmd, '/') - MCcmd, MCcmd, p_external))
+	else if (!MCCStringFormat(t_filename, "%.*s/%s", strrchr(MCStringGetCString(MCcmd), '/') - MCStringGetCString(MCcmd), MCStringGetCString(MCcmd), p_external))
 		return false;
 #else
 	if (!MCCStringClone(p_external, t_filename))

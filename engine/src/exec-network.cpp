@@ -699,7 +699,8 @@ void MCNetworkGetHttpProxy(MCExecContext& ctxt, MCStringRef& r_value)
 	}
 	else
 	{
-		if (MCStringCreateWithCString(MChttpproxy, r_value))
+		r_value = MCValueRetain(MChttpproxy);
+		if (MCStringIsEqualTo(MChttpproxy, r_value, kMCStringOptionCompareExact))
 			return;
 	}
 
@@ -708,11 +709,11 @@ void MCNetworkGetHttpProxy(MCExecContext& ctxt, MCStringRef& r_value)
 
 void MCNetworkSetHttpProxy(MCExecContext& ctxt, MCStringRef p_value)
 {
-	delete MChttpproxy;
+	MCValueRelease(MChttpproxy);
 	if (MCStringGetLength(p_value) == 0)
 		MChttpproxy = NULL;
 	else
-		MChttpproxy = strclone(MCStringGetCString(p_value));
+		MChttpproxy = MCValueRetain(p_value);
 }
 
 void MCNetworkGetHttpHeaders(MCExecContext& ctxt, MCStringRef& r_value)
@@ -724,7 +725,8 @@ void MCNetworkGetHttpHeaders(MCExecContext& ctxt, MCStringRef& r_value)
 	}
 	else
 	{
-		if (MCStringCreateWithCString(MChttpheaders, r_value))
+		r_value = MCValueRetain(MChttpheaders);
+		if (MCStringIsEqualTo(MChttpheaders, r_value, kMCStringOptionCompareExact))
 			return;
 	}
 
@@ -733,11 +735,11 @@ void MCNetworkGetHttpHeaders(MCExecContext& ctxt, MCStringRef& r_value)
 
 void MCNetworkSetHttpHeaders(MCExecContext& ctxt, MCStringRef p_value)
 {
-	delete MChttpheaders;
+	MCValueRelease(MChttpheaders);
 	if (MCStringGetLength(p_value) == 0)
 		MChttpheaders = NULL;
 	else
-		MChttpheaders = strclone(MCStringGetCString(p_value));
+		MChttpheaders = MCValueRetain(p_value);
 }
 
 void MCNetworkGetSocketTimeout(MCExecContext& ctxt, double& r_value)

@@ -1642,12 +1642,17 @@ Exec_stat MCProperty::set(MCExecPoint &ep)
 	}
 	break;
 	case P_HC_IMPORT_STAT:
-		delete MChcstat;
-		MChcstat = ep.getsvalue().clone();
+		MCValueRelease(MChcstat);
+		/* UNCHECHED */ MCStringCreateWithCString(ep.getsvalue().clone(), MChcstat)
 		break;
 	case P_SCRIPT_TEXT_FONT:
+<<<<<<< HEAD
 		delete MCscriptfont;
 		MCscriptfont = ep.getsvalue();
+=======
+		MCValueRelease(MCscriptfont);
+		/* UNCHECKED */ MCStringCreateWithCString(ep.getsvalue().clone(), MCscriptfont); 
+>>>>>>> e486499b88998e945608a84c9c9b52f33933fd20
 		break;
 	case P_SCRIPT_TEXT_SIZE:
 		return ep.getuint2(MCscriptsize, line, pos, EE_PROPERTY_NAN);
@@ -1804,8 +1809,8 @@ Exec_stat MCProperty::set(MCExecPoint &ep)
 		return ep.getboolean(MCsystemPS, line, pos, EE_PROPERTY_NAB);
 		
 	case P_FILE_TYPE:
-		delete MCfiletype;
-		MCfiletype = ep.getsvalue().clone();
+		MCValueRelease(MCfiletype);
+		/* UNCHECKED */ MCStringCreateWithCString(ep.getsvalue().clone(), MCfiletype);
 		return ES_NORMAL;
 		
 	case P_RECORD_FORMAT:
@@ -2003,8 +2008,13 @@ Exec_stat MCProperty::set(MCExecPoint &ep)
 	case P_DRAG_DELTA:
 		return ep.getuint2(MCdragdelta, line, pos, EE_PROPERTY_BADDRAGDELTA);
 	case P_STACK_FILE_TYPE:
+<<<<<<< HEAD
 		delete MCstackfiletype;
         MCstackfiletype = ep.getsvalue().clone();
+=======
+		MCValueRelease(MCstackfiletype);
+		/* UNCHECKED */ MCStringCreateWithCString(ep.getsvalue().clone(), MCstackfiletype); 
+>>>>>>> e486499b88998e945608a84c9c9b52f33933fd20
 		return ES_NORMAL;
 	case P_STACK_FILE_VERSION:
 		{
@@ -2033,8 +2043,13 @@ Exec_stat MCProperty::set(MCExecPoint &ep)
 		MCsecuremode = MC_SECUREMODE_ALL;
 		return ES_NORMAL;
 	case P_SERIAL_CONTROL_STRING:
+<<<<<<< HEAD
 		delete MCserialcontrolsettings;
 		MCserialcontrolsettings = ep.getsvalue().clone();
+=======
+		MCValueRelease(MCserialcontrolsettings);
+		/* UNCHECKED */ MCStringCreateWithCString(ep.getsvalue().clone(), MCserialcontrolsettings); 
+>>>>>>> e486499b88998e945608a84c9c9b52f33933fd20
 		return ES_NORMAL;
 	case P_EDIT_SCRIPTS:
 	case P_COLOR_WORLD:
@@ -2045,14 +2060,23 @@ Exec_stat MCProperty::set(MCExecPoint &ep)
 	case P_HIDE_CONSOLE_WINDOWS:
 		return ep.getboolean(MChidewindows, line, pos, EE_PROPERTY_NAB);
 	case P_FTP_PROXY:
+<<<<<<< HEAD
 		delete MCftpproxyhost;
 		
+=======
+		MCValueRelease(MCftpproxyhost);
+>>>>>>> e486499b88998e945608a84c9c9b52f33933fd20
 		if (ep.getsvalue().getlength() == 0)
 			MCftpproxyhost = NULL;
 		else
 		{
+<<<<<<< HEAD
 			MCftpproxyhost = ep.getsvalue().clone();
 			if ((eptr = strchr(MCftpproxyhost, ':')) != NULL)
+=======
+			/* UNCHECKED */ MCStringCreateWithCString(ep.getsvalue().clone(), MCftpproxyhost); 
+			if ((eptr = strchr(MCStringGetCString(MCftpproxyhost), ':')) != NULL)
+>>>>>>> e486499b88998e945608a84c9c9b52f33933fd20
 			{
 				*eptr++ = '\0';
 				MCftpproxyport = (uint2)strtol(eptr, NULL, 10);
@@ -2062,18 +2086,18 @@ Exec_stat MCProperty::set(MCExecPoint &ep)
 		}
 		break;
 	case P_HTTP_HEADERS:
-		delete MChttpheaders;
+		MCValueRelease(MChttpheaders);
 		if (ep.getsvalue().getlength() == 0)
 			MChttpheaders = NULL;
 		else
-			MChttpheaders = ep.getsvalue().clone();
+			/* UNCHECKED */ MCStringCreateWithCString(ep.getsvalue().clone(), MChttpheaders);
 		break;
 	case P_HTTP_PROXY:
-		delete MChttpproxy;
+		MCValueRelease(MChttpproxy);
 		if (ep . getsvalue() . getlength() == 0)
 			MChttpproxy = NULL;
 		else
-			MChttpproxy = ep . getsvalue() . clone();
+			/* UNCHECKED */ MCStringCreateWithCString(ep . getsvalue() . clone(), MChttpproxy);
 		break;
 	case P_SHOW_INVISIBLES:
 		stat = ep.getboolean(MCshowinvisibles, line, pos, EE_PROPERTY_NAB);
@@ -2370,14 +2394,24 @@ Exec_stat MCProperty::set(MCExecPoint &ep)
 	case P_VC_SHARED_MEMORY:
 		return ep.getboolean(MCvcshm, line, pos, EE_PROPERTY_NAB);
 	case P_VC_PLAYER:
+<<<<<<< HEAD
 		delete MCvcplayer;
 		MCvcplayer = ep.getsvalue().clone();
+=======
+		MCValueRelease(MCvplayer);
+		/* UNCHECKED */ MCStringCreateWithCString(ep.getsvalue().clone(), MCvplayer); 
+>>>>>>> e486499b88998e945608a84c9c9b52f33933fd20
 		break;
 	case P_SCREEN_GAMMA:
 		return ep.getreal8(MCgamma, line, pos, EE_PROPERTY_NAN);
 	case P_SHELL_COMMAND:
+<<<<<<< HEAD
 		delete MCshellcmd;
 		MCshellcmd = ep.getsvalue().clone();
+=======
+		MCValueRelease(MCshellcmd);
+		/* UNCHECKED */ MCStringCreateWithCString(ep.getsvalue().clone(), MCshellcmd); 
+>>>>>>> e486499b88998e945608a84c9c9b52f33933fd20
 		break;
 	case P_SOUND_CHANNEL:
 		return ep.getuint2(MCsoundchannel, line, pos, EE_PROPERTY_NAN);
@@ -3738,7 +3772,7 @@ Exec_stat MCProperty::eval(MCExecPoint &ep)
 			MCdialogdata->fetch(ep);
 			break;
 		case P_HC_IMPORT_STAT:
-			ep.setsvalue(MChcstat);
+			ep.setsvalue(MCStringGetCString(MChcstat));
 			break;
 		case P_SCRIPT_TEXT_FONT:
 			ep.setsvalue(MCscriptfont);
@@ -3829,7 +3863,7 @@ Exec_stat MCProperty::eval(MCExecPoint &ep)
 			ep.setboolean(MCsystemPS);
 			break;
 		case P_FILE_TYPE:
-			ep.setsvalue(MCfiletype);
+			ep.setsvalue(MCStringGetCString(MCfiletype));
 			break;
 		case P_STACK_FILE_TYPE:
 			ep.setsvalue(MCstackfiletype);
@@ -3898,13 +3932,13 @@ Exec_stat MCProperty::eval(MCExecPoint &ep)
 			if (MChttpheaders == NULL)
 				ep.clear();
 			else
-				ep.setsvalue(MChttpheaders);
+				ep.setsvalue(MCStringGetCString(MChttpheaders));
 			break;
 		case P_HTTP_PROXY:
 			if (MChttpproxy == NULL)
 				ep . clear();
 			else
-				ep . copysvalue(MChttpproxy);
+				ep . copysvalue(MCStringGetCString(MChttpproxy));
 			break;
 		case P_SHOW_INVISIBLES:
 			ep.setboolean(MCshowinvisibles);
