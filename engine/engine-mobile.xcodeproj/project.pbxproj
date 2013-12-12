@@ -433,6 +433,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1DB1B6D9185616DF000840A6 /* BillingProvider.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = BillingProvider.java; sourceTree = "<group>"; };
+		1DB1B6DE18561E57000840A6 /* BillingModule.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = BillingModule.java; sourceTree = "<group>"; };
+		1DB1B6ED185730AD000840A6 /* AndroidMarketBillingProvider.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = AndroidMarketBillingProvider.java; sourceTree = "<group>"; };
+		1DB1B6EE18587080000840A6 /* AmazonBillingProvider.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = AmazonBillingProvider.java; sourceTree = "<group>"; };
+		1DB1B6EF18587111000840A6 /* SamsungBillingProvider.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = SamsungBillingProvider.java; sourceTree = "<group>"; };
 		3C07062E12942ADC0021FFAA /* mbliphonescroller.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = mbliphonescroller.mm; path = src/mbliphonescroller.mm; sourceTree = "<group>"; };
 		3CC6F42712AD0A6100852B3B /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		4C3454FC14F3FE56008D7E50 /* mblad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mblad.cpp; path = src/mblad.cpp; sourceTree = "<group>"; };
@@ -1495,6 +1500,11 @@
 				E823E62114D01321001F73C4 /* PurchaseUpdate.java */,
 				E823E62214D01321001F73C4 /* ResponseHandler.java */,
 				E823E62314D01321001F73C4 /* Security.java */,
+				1DB1B6D9185616DF000840A6 /* BillingProvider.java */,
+				1DB1B6DE18561E57000840A6 /* BillingModule.java */,
+				1DB1B6ED185730AD000840A6 /* AndroidMarketBillingProvider.java */,
+				1DB1B6EE18587080000840A6 /* AmazonBillingProvider.java */,
+				1DB1B6EF18587111000840A6 /* SamsungBillingProvider.java */,
 			);
 			name = billing;
 			sourceTree = "<group>";

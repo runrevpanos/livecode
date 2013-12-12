@@ -27,7 +27,8 @@ import android.app.*;
 import android.content.*;
 import android.content.IntentSender.SendIntentException;
 
-public abstract class PurchaseObserver
+
+public class PurchaseObserver
 {
 	private static final String TAG = "PurchaseObserver";
 	private final Activity mActivity;
@@ -57,3 +58,4 @@ public abstract class PurchaseObserver
 		}
 	}
 }
+

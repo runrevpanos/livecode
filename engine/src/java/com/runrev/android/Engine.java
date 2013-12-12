@@ -1881,89 +1881,43 @@ public class Engine extends View implements EngineApi
 ////////////////////////////////////////////////////////////////////////////////
 
 	// in-app purchasing
+    public static mBillingModule = new BillingModule();
+    
+    public static BillingProvider mBillingProvider = mBillingModule.getBillingProvider();
 
-	private static Class mBillingServiceClass = null;
-
-	public static Class getBillingServiceClass()
-	{
-		return mBillingServiceClass;
-	}
-
-	private static void setBillingServiceClass(Class pClass)
-	{
-		mBillingServiceClass = pClass;
-	}
-
-	private BillingService mBilling = null;
-	private EnginePurchaseObserver mPurchaseObserver = null;
-
+	
 	private void initBilling()
 	{
-        String t_public_key = doGetCustomPropertyValue("cREVStandaloneSettings", "android,storeKey");
-        if (t_public_key != null && t_public_key.length() > 0)
-            Security.setPublicKey(t_public_key);
+        mBillingProvider.initBilling();
 
-		String classFqn = getContext().getPackageName() + ".AppService";
-		try
-		{
-			Class tClass = Class.forName(classFqn);
-			setBillingServiceClass(tClass);
-
-			mBilling = (BillingService)tClass.newInstance();
-		}
-		catch (Exception e)
-		{
-			return;
-		}
-
-		mBilling.setContext(this.getContext());
-
-		mPurchaseObserver = new EnginePurchaseObserver((Activity)getContext());
-		ResponseHandler.register(mPurchaseObserver);
 	}
 
 	public boolean storeCanMakePurchase()
 	{
-		if (mBilling == null)
-			return false;
-
-		return mBilling.checkBillingSupported();
+		return mBillingProvider.canMakePurchase();
 	}
 
 	public void storeSetUpdates(boolean enabled)
 	{
-		if (mBilling == null)
-			return;
-
 		if (enabled)
-			ResponseHandler.register(mPurchaseObserver);
-		else
-			ResponseHandler.unregister(mPurchaseObserver);
+            mBillingProvider.enableUpdates();
+        else
+			mBillingProvider.disableUpdates();
 	}
 
 	public boolean storeRestorePurchases()
 	{
-		if (mBilling == null)
-			return false;
-
-		return mBilling.restoreTransactions();
+		return mBillingProvider.restorePurchases();
 	}
 
 	public boolean purchaseSendRequest(int purchaseId, String productId, String developerPayload)
 	{
-		if (mBilling == null)
-			return false;
-
-		Log.i(TAG, "purchaseSendRequest(" + purchaseId + ", " + productId + ")");
-		return mBilling.requestPurchase(purchaseId, productId, developerPayload);
+		return mBillingProvider.sendRequest(purchaseId, productId, developerPayload);
 	}
 
 	public boolean purchaseConfirmDelivery(int purchaseId, String notificationId)
 	{
-		if (mBilling == null)
-			return false;
-
-		return mBilling.confirmNotification(purchaseId, notificationId);
+        return mBillingProvider.confirmDelivery(purchaseId, notificationId);
 	}
 
 ////////
