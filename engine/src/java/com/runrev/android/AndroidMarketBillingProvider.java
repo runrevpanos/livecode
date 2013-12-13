@@ -20,9 +20,8 @@ package com.runrev.android.billing;
 public class AndroidMarketBillingProvider
 {    
     private BillingService mBilling = null;
-	private EnginePurchaseObserver mPurchaseObserver = null;
+	private PurchaseObserver mPurchaseObserver;
     private static Class mBillingServiceClass = null;
-    private Engine mEngine;
     
     boolean canMakePurchase()
     {
@@ -82,6 +81,7 @@ public class AndroidMarketBillingProvider
         mPurchaseObserver = observer;
     }
     
+    
 	public static Class getBillingServiceClass()
 	{
 		return mBillingServiceClass;
@@ -98,7 +98,7 @@ public class AndroidMarketBillingProvider
         if (t_public_key != null && t_public_key.length() > 0)
             Security.setPublicKey(t_public_key);
         
-        String classFqn = mEngine.getContext().getPackageName() + ".AppService";
+        String classFqn = Engine.getEngine().getContext().getPackageName() + ".AppService";
 		try
 		{
 			Class tClass = Class.forName(classFqn);
@@ -111,9 +111,8 @@ public class AndroidMarketBillingProvider
 			return;
 		}
         
-		mBilling.setContext(mEngine.getContext());
+		mBilling.setContext(Engine.getEngine().getContext());
         
-		mPurchaseObserver = new EnginePurchaseObserver((Activity)mEngine.getContext());
 		ResponseHandler.register(mPurchaseObserver);
         
     }

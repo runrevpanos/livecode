@@ -40,7 +40,6 @@ public class AmazonBillingProvider
                 GetUserIdResponse.GetUserIdRequestStatus.SUCCESSFUL)
             {
                 currentUserID = response.getUserId();
-                PurchasingManager.initiatePurchaseUpdatesRequest(getPersistedOffset());
             }
             else
             {
@@ -48,7 +47,7 @@ public class AmazonBillingProvider
             }
         }
         
-        private Offset getPersistedOffset()
+        public static Offset getPersistedOffset()
         {
             // Retrieve the offset you have previously persisted.
             // If no offset exists or the app is dealing exclusively with consumables
@@ -115,7 +114,7 @@ public class AmazonBillingProvider
     }
     
     private MyPurchasingObserver mPurchasingObserver = null;
-    private EnginePurchaseObserver mPurchaseObserver = nul;
+    private PurchaseObserver mPurchaseObserver;
     
     /*Always equals true. The Amazon Appstore allows a customer to disable In-App Purchasing, the IAP workflow
      will reflect this when the user is prompted to buy an item. There is no way for your app to know if a 
@@ -138,7 +137,7 @@ public class AmazonBillingProvider
     
     boolean restorePurchases()
     {
-        PurchasingManager.initiateGetUserIdRequest();
+        PurchasingManager.initiatePurchaseUpdatesRequest(MyPurchasingObserver.getPersistedOffset());
         return true;
     }
     
@@ -161,6 +160,7 @@ public class AmazonBillingProvider
     
     void initBilling()
     {
-        //the <receiver> sections of the manifest have to be added (How?)
+        PurchasingManager.initiateGetUserIdRequest();
+        //the <receiver> sections of the manifest are added by the standalone builder
     }
 }

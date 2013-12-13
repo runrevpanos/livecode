@@ -1884,10 +1884,13 @@ public class Engine extends View implements EngineApi
     public static mBillingModule = new BillingModule();
     
     public static BillingProvider mBillingProvider = mBillingModule.getBillingProvider();
-
-	
+    
+    public EnginePurchaseObserver mPurchaseObserver;
+    	
 	private void initBilling()
 	{
+        mPurchaseObserver = new EnginePurchaseObserver((Activity)getContext());
+        mBillingProvider.setPurchaseObserver(mPurchaseObserver);
         mBillingProvider.initBilling();
 
 	}
