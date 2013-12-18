@@ -38,6 +38,16 @@ public abstract class PurchaseObserver
 		mActivity = activity;
 	}
 	
+    // Sent to the observer to indicate a change in the purchase state
+    void onPurchaseStateChanged(int purchaseId, PurchaseState state);
+    // Sent to the observer to when an error occurs while sending the purchase request
+    void onPurchaseRequestError(String errorMessage);
+    // Sent to the observer once purchases have been successfully restored
+    void onPurchasesRestored();
+    // Sent to the observer if purchase restoration fails
+    void onPurchaseRestoreError(String errorMessage);
+
+    
 	public abstract void onBillingSupported(boolean supported);
 	public abstract void onPurchaseStateChanged(Purchase p, boolean verified, String signedData, String signature);
 	

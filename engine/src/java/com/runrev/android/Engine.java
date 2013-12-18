@@ -1944,6 +1944,13 @@ public class Engine extends View implements EngineApi
 			});
 		}
 
+        /*public void onPurchaseStateChanged(int purchaseId, PurchaseState state)
+         {
+            Map<String, String> properties = getPurchaseProperties(purchaseId);
+            
+
+         }
+         */
 		public void onPurchaseStateChanged(Purchase purchase, boolean verified, String signedData, String signature)
 		{
 			final boolean tVerified = verified;
@@ -1967,6 +1974,11 @@ public class Engine extends View implements EngineApi
 			});
 		}
 
+        /* public void onPurchasesRestored()
+         {
+            
+         }
+         */
 		public void onRestoreTransactionsResponse(RestoreTransactions request, ResponseCode responseCode)
 		{
 			final int tResponseCode = responseCode.ordinal();

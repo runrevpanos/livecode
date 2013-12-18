@@ -16,6 +16,7 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 
 package com.runrev.android.billing;
 
+import java.util.*
 
 public interface BillingProvider
 {
@@ -24,6 +25,7 @@ public interface BillingProvider
     boolean disableUpdates();
     boolean restorePurchases();
     boolean sendRequest(int purchaseId, String productId, Map<String, String> properties);
+    Map<String, String> getPurchaseProperties(int purchaseId);
     boolean confirmDelivery(int purchaseId);
     void setPurchaseObserver(PurchaseObserver observer);
     void initBilling();
