@@ -780,6 +780,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1D162FD4187AEFC2004AABF0 /* Purchase.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Purchase.java; sourceTree = "<group>"; };
+		1D162FD5187AF0ED004AABF0 /* Base64.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Base64.java; sourceTree = "<group>"; };
+		1D162FD6187AF14D004AABF0 /* IabResult.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = IabResult.java; sourceTree = "<group>"; };
+		1D162FD7187AF192004AABF0 /* SkuDetails.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = SkuDetails.java; sourceTree = "<group>"; };
+		1D162FD8187AF1C7004AABF0 /* Base64DecoderException.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Base64DecoderException.java; sourceTree = "<group>"; };
+		1D162FD9187AF1F7004AABF0 /* Inventory.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Inventory.java; sourceTree = "<group>"; };
+		1D162FDA187AF221004AABF0 /* IabHelper.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = IabHelper.java; sourceTree = "<group>"; };
+		1D162FDB187AF249004AABF0 /* IabException.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = IabException.java; sourceTree = "<group>"; };
 		3C03ED911134205A009DE406 /* socket_resolve.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = socket_resolve.cpp; path = src/socket_resolve.cpp; sourceTree = "<group>"; };
 		3C0A3CC310BAF6120074D630 /* iquantization.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = iquantization.cpp; path = src/iquantization.cpp; sourceTree = "<group>"; };
 		3C0A3CC510BAF63B0074D630 /* iquantization.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iquantization.h; path = src/iquantization.h; sourceTree = "<group>"; };
@@ -812,13 +820,6 @@
 		4D140F7615A5A82300191B5E /* PurchaseUpdate.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = PurchaseUpdate.java; sourceTree = "<group>"; };
 		4D140F7715A5A82300191B5E /* ResponseHandler.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ResponseHandler.java; sourceTree = "<group>"; };
 		4D140F7815A5A82300191B5E /* Security.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Security.java; sourceTree = "<group>"; };
-		4D140F7915A5A82300191B5E /* BillingReceiver.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = BillingReceiver.java; path = billing/BillingReceiver.java; sourceTree = "<group>"; };
-		4D140F7A15A5A82300191B5E /* BillingService.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = BillingService.java; path = billing/BillingService.java; sourceTree = "<group>"; };
-		4D140F7B15A5A82300191B5E /* C.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = C.java; path = billing/C.java; sourceTree = "<group>"; };
-		4D140F7C15A5A82300191B5E /* PurchaseObserver.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = PurchaseObserver.java; path = billing/PurchaseObserver.java; sourceTree = "<group>"; };
-		4D140F7D15A5A82300191B5E /* PurchaseUpdate.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = PurchaseUpdate.java; path = billing/PurchaseUpdate.java; sourceTree = "<group>"; };
-		4D140F7E15A5A82300191B5E /* ResponseHandler.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = ResponseHandler.java; path = billing/ResponseHandler.java; sourceTree = "<group>"; };
-		4D140F7F15A5A82300191B5E /* Security.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = Security.java; path = billing/Security.java; sourceTree = "<group>"; };
 		4D140F8015A5A82300191B5E /* BitmapView.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = BitmapView.java; sourceTree = "<group>"; };
 		4D140F8115A5A82300191B5E /* BusyIndicator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = BusyIndicator.java; sourceTree = "<group>"; };
 		4D140F8215A5A82300191B5E /* CalendarEvents.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = CalendarEvents.java; sourceTree = "<group>"; };
@@ -1548,6 +1549,14 @@
 				4D140F7615A5A82300191B5E /* PurchaseUpdate.java */,
 				4D140F7715A5A82300191B5E /* ResponseHandler.java */,
 				4D140F7815A5A82300191B5E /* Security.java */,
+				1D162FD4187AEFC2004AABF0 /* Purchase.java */,
+				1D162FD5187AF0ED004AABF0 /* Base64.java */,
+				1D162FD6187AF14D004AABF0 /* IabResult.java */,
+				1D162FD7187AF192004AABF0 /* SkuDetails.java */,
+				1D162FD8187AF1C7004AABF0 /* Base64DecoderException.java */,
+				1D162FD9187AF1F7004AABF0 /* Inventory.java */,
+				1D162FDA187AF221004AABF0 /* IabHelper.java */,
+				1D162FDB187AF249004AABF0 /* IabException.java */,
 			);
 			path = billing;
 			sourceTree = "<group>";
@@ -1961,13 +1970,6 @@
 				4D140F7115A5A82300191B5E /* billing */,
 				4D140F6F15A5A82300191B5E /* AdModule.java */,
 				4D140F7015A5A82300191B5E /* Alert.java */,
-				4D140F7915A5A82300191B5E /* BillingReceiver.java */,
-				4D140F7A15A5A82300191B5E /* BillingService.java */,
-				4D140F7B15A5A82300191B5E /* C.java */,
-				4D140F7C15A5A82300191B5E /* PurchaseObserver.java */,
-				4D140F7D15A5A82300191B5E /* PurchaseUpdate.java */,
-				4D140F7E15A5A82300191B5E /* ResponseHandler.java */,
-				4D140F7F15A5A82300191B5E /* Security.java */,
 				4D140F8015A5A82300191B5E /* BitmapView.java */,
 				4D140F8115A5A82300191B5E /* BusyIndicator.java */,
 				4D140F8215A5A82300191B5E /* CalendarEvents.java */,
