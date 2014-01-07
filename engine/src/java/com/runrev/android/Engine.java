@@ -2016,8 +2016,9 @@ public class Engine extends View implements EngineApi
     // Enables or disables the "please wait" screen.
     void setWaitScreen(boolean set)
     {
-        getActivity().findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
-        getActivity().findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
+        // Uncomment these lines after fixing the "R package not found " error
+        //getActivity().findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
+        //getActivity().findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
     }
     
     void complain(String message)
@@ -2096,7 +2097,7 @@ public class Engine extends View implements EngineApi
         return true;
     }
 
-/*
+
      private static Class mBillingServiceClass = null;
  
      public static Class getBillingServiceClass()
@@ -2108,7 +2109,7 @@ public class Engine extends View implements EngineApi
      {
      mBillingServiceClass = pClass;
      }
-     
+ /*    
      private BillingService mBilling = null;
      private EnginePurchaseObserver mPurchaseObserver = null;
      

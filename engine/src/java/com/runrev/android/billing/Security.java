@@ -89,11 +89,19 @@ public class Security {
             setPublicKey(tKey);
             return true;
         }
+        
+        catch (Base64DecoderException e)
+        {
+            Log.e(TAG, "Base64 decoding failed.");
+            throw new IllegalArgumentException(e);
+        }
+        /*
         catch (IllegalArgumentException e)
         {
             // couldn't decode key string
         }
         return false;
+         */
     }
     
     /**

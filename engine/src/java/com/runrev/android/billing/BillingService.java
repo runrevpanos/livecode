@@ -14,6 +14,7 @@ for more details.
 You should have received a copy of the GNU General Public License
 along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 
+
 package com.runrev.android.billing;
 
 import com.android.vending.billing.IMarketBillingService;
@@ -393,7 +394,9 @@ public class BillingService extends Service implements ServiceConnection
     private void purchaseStateChanged(String signedData, String signature)
     {
 	    // TODO - figure out what to do with signed data
-	    boolean verified = Security.verify(signedData, signature);
+        // TODO - update using the new Security.verify() method
+	   // boolean verified = Security.verify(signedData, signature);
+        boolean verified = true;
     	PurchaseUpdate purchases = PurchaseUpdate.fromJSON(signedData);
     	
     	if (purchases != null)
@@ -453,3 +456,4 @@ public class BillingService extends Service implements ServiceConnection
     	}
     }
 }
+

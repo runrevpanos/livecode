@@ -22,6 +22,8 @@ package com.runrev.android.billing;
  * call {@link #getResult()}.
  */
 public class IabException extends Exception {
+    
+    private static final long serialVersionUID = -7238205509940581401L;
     IabResult mResult;
     
     public IabException(IabResult r) {
