@@ -75,6 +75,7 @@ LOCAL_MODULE := revandroid-community
 
 LOCAL_ARM_MODE := arm
 
+
 LOCAL_SRC_FILES := $(addprefix src/,stacksecurity.cpp mblandroidad.cpp)
 
 LOCAL_C_INCLUDES := \
@@ -83,7 +84,8 @@ LOCAL_C_INCLUDES := \
 
 LOCAL_STATIC_LIBRARIES := librevandroid-kernel libcore libjpeg libpcre libpng libgif libskia libfreetype
 
-LOCAL_LDLIBS += -lz -lm -llog -ljnigraphics -lGLESv1_CM
+LOCAL_LDLIBS += -lz -lm -llog -ljnigraphics -lGLESv1_CM 
+
 
 LOCAL_LDFLAGS := -Wl,--script=$(LOCAL_PATH)/standalone-android.link
 

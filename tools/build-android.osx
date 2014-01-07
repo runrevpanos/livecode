@@ -47,8 +47,8 @@ fi
 
 export JAVASRC=$SRCROOT/engine/src/java
 
-# generate the MarketBillingService interface class from the aidl file
-"$AIDL" -I"JAVASRC" -p"$ANDROID_SDK/platforms/android-8/framework.aidl" "$JAVASRC/com/android/vending/billing/IMarketBillingService.aidl"
+# generate the IInAppBillingService interface class from the aidl file
+"$AIDL" -I"JAVASRC" -p"$ANDROID_SDK/platforms/android-8/framework.aidl" "$JAVASRC/com/android/vending/billing/IInAppBillingService.aidl"
 if [ $? != 0 ]; then
 	exit $?
 fi

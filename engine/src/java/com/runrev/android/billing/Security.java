@@ -21,7 +21,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+import java.util.HashSet;
+import java.security.SecureRandom;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
