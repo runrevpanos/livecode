@@ -280,6 +280,7 @@ public class IabHelper {
                                                           "Billing service unavailable on device."));
             }
         }
+        
     }
     
     /**
@@ -658,6 +659,8 @@ public class IabHelper {
      * @throws IabException if there is a problem during consumption.
      */
     void consume(Purchase itemInfo) throws IabException {
+        if (itemInfo == null)
+            return;
         checkNotDisposed();
         checkSetupDone("consume");
         
@@ -971,6 +974,8 @@ public class IabHelper {
     void consumeAsyncInternal(final List<Purchase> purchases,
                               final OnConsumeFinishedListener singleListener,
                               final OnConsumeMultiFinishedListener multiListener) {
+        if (purchases == null)
+            return;
         final Handler handler = new Handler();
         flagStartAsync("consume");
         (new Thread(new Runnable() {

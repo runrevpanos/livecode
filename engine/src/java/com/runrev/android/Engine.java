@@ -16,15 +16,10 @@
 
 package com.runrev.android;
 
-//import com.runrev.android.R;
+//TODO : Check why R package is not generated
+//import com.runrev.revandroid.R;
 import com.runrev.android.billing.*;
-import com.runrev.android.billing.C.ResponseCode;
-//import com.runrev.android.billing.PurchaseUpdate.Purchase;
 import com.runrev.android.billing.Purchase;
-import com.runrev.android.billing.BillingService.RestoreTransactions;
-import com.runrev.android.billing.BillingService.GetPurchaseInformation;
-import com.runrev.android.billing.BillingService.ConfirmNotification;
-import com.runrev.android.billing.BillingService.RequestPurchase;
 
 import com.runrev.android.nativecontrol.NativeControlModule;
 import com.runrev.android.nativecontrol.VideoControl;
@@ -1755,6 +1750,7 @@ public class Engine extends View implements EngineApi
     private static final int CREATE_CALENDAR_RESULT = 11;
     private static final int UPDATE_CALENDAR_RESULT = 12;
     private static final int SHOW_CALENDAR_RESULT = 13;
+    private static final int BILLING_RESULT = 10001;
 	
 	// MW-2013-08-07: [[ ExternalsApiV5 ]] Activity result code for activities
 	//   launched through 'runActivity' API.
@@ -1805,6 +1801,22 @@ public class Engine extends View implements EngineApi
 			case RUN_ACTIVITY_RESULT:
 				onRunActivityResult(resultCode, data);
 				break;
+            case BILLING_RESULT:
+            {
+                Log.d(TAG, "onActivityResult(" + requestCode + "," + resultCode + "," + data);
+                    
+                // Pass on the activity result to the helper for handling
+                if (!mHelper.handleActivityResult(requestCode, resultCode, data))
+                {
+                        // not handled
+                    Log.d(TAG, "onActivityResult NOT handled by IABUtil.");
+                }
+                else
+                {
+                    Log.d(TAG, "onActivityResult handled by IABUtil.");
+                }
+            }
+                break;
 			default:
 				break;
 		}
@@ -1890,12 +1902,10 @@ public class Engine extends View implements EngineApi
     // The helper object
     IabHelper mHelper = null;
     
-    // Listener that's called when we finish querying the items and subscriptions we own
-    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = null;
-    
     private void initBilling()
 	{
         String t_public_key = doGetCustomPropertyValue("cREVStandaloneSettings", "android,storeKey");
+        
         if (t_public_key != null && t_public_key.length() > 0)
             Security.setPublicKey(t_public_key);
         
@@ -1903,21 +1913,21 @@ public class Engine extends View implements EngineApi
         Log.d(TAG, "Creating IAB helper.");
         mHelper = new IabHelper(getActivity(), t_public_key);
         
-        // enable debug logging (for a production application, you should set this to false).
+        // TODO enable debug logging (for a production application, you should set this to false).
         mHelper.enableDebugLogging(true);
         
         // Start setup. This is asynchronous and the specified listener
         // will be called once setup completes.
         Log.d(TAG, "Starting setup.");
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener()
-                           {
+        {
             public void onIabSetupFinished(IabResult result)
             {
                 Log.d(TAG, "Setup finished.");
                 
                 if (!result.isSuccess())
                 {
-                    // Oh noes, there was a problem.
+                    // Oh no, there was a problem.
                     complain("Problem setting up in-app billing: " + result);
                     return;
                 }
@@ -1927,10 +1937,13 @@ public class Engine extends View implements EngineApi
                 
                 // IAB is fully set up.
                 Log.d(TAG, "Setup successful.");
+                
+                mHelper.queryInventoryAsync(mGotInventoryListener);
             }
         });
 	}
     
+    // Determine whether the store is available and purchases can be made
 	public boolean storeCanMakePurchase()
 	{
 		if (mHelper == null)
@@ -1940,6 +1953,7 @@ public class Engine extends View implements EngineApi
             return mHelper.is_billing_supported;
 	}
     
+    // Allow/Prevent the store to send purchase updates to the engine
 	public void storeSetUpdates(boolean enabled)
 	{
 		if (mHelper == null)
@@ -1952,44 +1966,26 @@ public class Engine extends View implements EngineApi
         }
 		else
         {
-			if (mHelper != null)
-            {
-                mHelper.dispose();
-                mHelper = null;
-            }
+            //TODO
+            return;
         }
 	}
     
+    //Begin a purchase restoration operation to reenable previously purchased items
 	public boolean storeRestorePurchases()
 	{
+        // Not sure if this is needed, since inventory is queried when the app is launched (initBilling())
+        /*
         if (mHelper == null)
 			return false;
         
         Log.d(TAG, "Querying inventory.");
-        mHelper.queryInventoryAsync(new IabHelper.QueryInventoryFinishedListener()
-                                    {
-            public void onQueryInventoryFinished(IabResult result, Inventory inventory)
-            {
-                Log.d(TAG, "Query inventory finished.");
-                
-                // Have we been disposed of in the meantime? If so, quit.
-                if (mHelper == null) return;
-                
-                // Is it a failure?
-                if (result.isFailure())
-                {
-                    complain("Failed to query inventory: " + result);
-                    return;
-                }
-                
-                Log.d(TAG, "Query inventory was successful.");
-                
-            }
-        });
-        
+        mHelper.queryInventoryAsync(mGotInventoryListener);
+        */
 		return true;
 	}
     
+    // Create and send a new purchase request 
 	public boolean purchaseSendRequest(int purchaseId, String productId, String developerPayload)
 	{
 		if (mHelper == null)
@@ -2000,6 +1996,35 @@ public class Engine extends View implements EngineApi
 		return true;
 	}
     
+    public boolean storeConsumePurchase(final String productId)
+    {
+        mHelper.queryInventoryAsync(new IabHelper.QueryInventoryFinishedListener()
+        {
+            @Override
+            public void onQueryInventoryFinished(IabResult result, Inventory inventory)
+            {
+                
+                if (result.isFailure())
+                {
+                    return;
+                }
+                else
+                {
+                    Purchase purchase = inventory.getPurchase(productId);
+                    // Do this check to avoid a NullPointerException
+                    if (purchase == null)
+                    {
+                        Log.d(TAG, "You cannot consume item : " + productId + ", since you don't own it!");
+                        return;
+                    }
+                    mHelper.consumeAsync(purchase, mConsumeFinishedListener);
+                }
+            }
+        });
+        return true;
+    }    
+    
+    // Notify the store that the item has been delivered
 	public boolean purchaseConfirmDelivery(int purchaseId, String notificationId)
 	{
 		if (mHelper == null)
@@ -2007,7 +2032,6 @@ public class Engine extends View implements EngineApi
         
 		else
             //TODO
-            //mHelper.handleActivityResult(..)???
             return false;
     }
     
@@ -2017,8 +2041,8 @@ public class Engine extends View implements EngineApi
     void setWaitScreen(boolean set)
     {
         // Uncomment these lines after fixing the "R package not found " error
-        //getActivity().findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
-        //getActivity().findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
+       // getActivity().findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
+      //  getActivity().findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
     }
     
     void complain(String message)
@@ -2036,35 +2060,107 @@ public class Engine extends View implements EngineApi
         bld.create().show();
     }
     
-    // Callback for when a purchase is finished
+    
+    // Listeners
+    
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener()
     {
-    public void onIabPurchaseFinished(IabResult result, Purchase purchase)
-    {
-    Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
-    
-    // if we were disposed of in the meantime, quit.
-    if (mHelper == null)
-        return;
-    
-    if (result.isFailure())
-    {
-        complain("Error purchasing: " + result);
-        setWaitScreen(false);
-        return;
-    }
-    
-    if (!verifyDeveloperPayload(purchase))
-    {
-        complain("Error purchasing. Authenticity verification failed.");
-        setWaitScreen(false);
-        return;
-    }
-    
-    Log.d(TAG, "Purchase successful.");
-    }
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase)
+        {
+            Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+
+            // if we were disposed of in the meantime, quit.
+            if (mHelper == null)
+            {
+                return;
+            }
+            
+            if (result.isFailure())
+            {
+                complain("Error purchasing: " + result);
+                setWaitScreen(false);
+                return;
+            }
+            
+            if (!verifyDeveloperPayload(purchase))
+            {
+                complain("Error purchasing. Authenticity verification failed.");
+                setWaitScreen(false);
+                return;
+            }
+            
+            Log.d(TAG, "Purchase successful.");
+            
+            final boolean tVerified = true;
+            final int tPurchaseState = purchase.getPurchaseState();
+            final String tNotificationId = purchase.getSku();
+            final String tProductId = purchase.getSku();
+            final String tOrderId = purchase.getOrderId();
+            final long tPurchaseTime = purchase.getPurchaseTime();
+            final String tDeveloperPayload = purchase.getDeveloperPayload();
+            final String tSignedData = "";
+            final String tSignature = purchase.getSignature();
+            
+            post(new Runnable()
+            {
+                public void run()
+                {
+                    doPurchaseStateChanged(tVerified, tPurchaseState,
+                                           tNotificationId, tProductId, tOrderId,
+                                           tPurchaseTime, tDeveloperPayload, tSignedData, tSignature);
+                    if (m_wake_on_event)
+                        doProcess(false);
+                }
+            });
+        }
     };
 
+
+    // Called when consumption is complete
+    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener()
+    {
+        public void onConsumeFinished(Purchase purchase, IabResult result)
+        {
+            Log.d(TAG, "Consumption finished. Purchase: " + purchase + ", result: " + result);
+
+            if (result.isSuccess())
+            {
+                Log.d(TAG, "Consumption successful. Provisioning.");
+            }
+            else
+            {
+                complain("Error while consuming: " + result);
+            }
+
+            setWaitScreen(false);
+            Log.d(TAG, "End consumption flow.");
+        }
+    };
+
+
+    // Called when we finish querying the items we own
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener()
+    {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory)
+        {
+            Log.d(TAG, "Query inventory finished.");
+
+            // Have we been disposed of in the meantime? If so, quit.
+            if (mHelper == null)
+                return;
+
+            if (result.isFailure())
+            {
+                complain("Failed to query inventory: " + result);
+                return;
+            }
+
+            Log.d(TAG, "Query inventory was successful.");
+
+            setWaitScreen(false);
+            Log.d(TAG, "Initial inventory query finished; enabling main UI.");
+        }
+    };
 
 /** Verifies the developer payload of a purchase. */
     boolean verifyDeveloperPayload(Purchase p)
@@ -2098,17 +2194,6 @@ public class Engine extends View implements EngineApi
     }
 
 
-     private static Class mBillingServiceClass = null;
- 
-     public static Class getBillingServiceClass()
-     {
-     return mBillingServiceClass;
-     }
- 
-     private static void setBillingServiceClass(Class pClass)
-     {
-     mBillingServiceClass = pClass;
-     }
  /*    
      private BillingService mBilling = null;
      private EnginePurchaseObserver mPurchaseObserver = null;
@@ -2763,6 +2848,12 @@ public class Engine extends View implements EngineApi
 
     public void onDestroy()
     {
+        if (mHelper != null)
+        {
+            mHelper.dispose();
+            mHelper = null;
+        }
+
         doDestroy();
         s_engine_instance = null;
     }

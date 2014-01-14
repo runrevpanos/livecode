@@ -16,8 +16,6 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 
 package com.runrev.android;
 
-import com.runrev.android.billing.BillingReceiver;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

@@ -789,6 +789,7 @@
 		1D162FDA187AF221004AABF0 /* IabHelper.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = IabHelper.java; sourceTree = "<group>"; };
 		1D162FDB187AF249004AABF0 /* IabException.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = IabException.java; sourceTree = "<group>"; };
 		1D88038B187C55100013DAF7 /* EngineReceiver.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = EngineReceiver.java; sourceTree = "<group>"; };
+		1D8803A5188454C50013DAF7 /* mblandroidstore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = mblandroidstore.cpp; path = src/mblandroidstore.cpp; sourceTree = "<group>"; };
 		3C03ED911134205A009DE406 /* socket_resolve.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = socket_resolve.cpp; path = src/socket_resolve.cpp; sourceTree = "<group>"; };
 		3C0A3CC310BAF6120074D630 /* iquantization.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = iquantization.cpp; path = src/iquantization.cpp; sourceTree = "<group>"; };
 		3C0A3CC510BAF63B0074D630 /* iquantization.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iquantization.h; path = src/iquantization.h; sourceTree = "<group>"; };
@@ -1926,6 +1927,7 @@
 				4DD54D2D134F591500981610 /* mblandroidprocess.cpp */,
 				4DB968A3135DFDA900DCAE93 /* mblandroidmail.cpp */,
 				4DB968A4135DFDA900DCAE93 /* mblandroidorientation.cpp */,
+				1D8803A5188454C50013DAF7 /* mblandroidstore.cpp */,
 				4DB968A5135DFDA900DCAE93 /* mblandroidtextlayout.cpp */,
 				4DD54D2E134F591500981610 /* mblandroidurl.cpp */,
 				4DD54D2F134F591500981610 /* mblandroidutil.h */,
