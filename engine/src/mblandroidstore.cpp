@@ -45,11 +45,12 @@ typedef enum
     RESULT_ERROR,
 } MCAndroidResponseCode;
 
-typedef enum
+typedef enum  // the order should match "Enum PurchaseResponse.PurchaseRequestStatus"
 {
-    PURCHASED,
-    CANCELED,
-    REFUNDED,
+    SUCCESSFUL,
+    FAILED,
+    INVALID_SKU,
+    ALREADY_ENTITLED,
 } MCAndroidPurchaseState;
 
 typedef struct
@@ -315,21 +316,26 @@ void MCPurchaseVerify(MCPurchase *p_purchase, bool p_verified)
         if (p_verified)
         {
             switch (t_android_data->purchase_state) {
-                case PURCHASED:
+                case SUCCESSFUL:
                     p_purchase->state = kMCPurchaseStatePaymentReceived;
                     break;
                     
-                case CANCELED:
+                case ALREADY_ENTITLED:
+                {
+                    p_purchase->state = kMCPurchaseStateAlreadyEntitled;
+                    break;
+                }
+                case INVALID_SKU:
+                    p_purchase->state = kMCPurchaseStateInvalidSKU;
+                    break;
+                                    
+                case FAILED:
                 {
                     //MCLog("verified canceled purchase", nil);
-                    p_purchase->state = kMCPurchaseStateCancelled;
+                    p_purchase->state = kMCPurchaseStateFailed;
                     purchase_confirm(p_purchase);
                     break;
                 }
-                case REFUNDED:
-                    //MCLog("verified refunded purchase", nil);
-                    p_purchase->state = kMCPurchaseStateRefunded;
-                    break;
                     
                 default:
                     break;
@@ -352,12 +358,14 @@ void update_purchase_state(MCPurchase *p_purchase, int32_t p_state, bool p_verif
 {
     if (!p_verified)
         p_purchase->state = kMCPurchaseStateUnverified;
-    else if (p_state == PURCHASED)
+    else if (p_state == ALREADY_ENTITLED)
+        p_purchase->state = kMCPurchaseStateAlreadyEntitled;
+    else if (p_state == SUCCESSFUL)
         p_purchase->state = kMCPurchaseStatePaymentReceived;
-    else if (p_state == REFUNDED)
-        p_purchase->state = kMCPurchaseStateRefunded;
+    else if (p_state == INVALID_SKU)
+        p_purchase->state = kMCPurchaseStateInvalidSKU;
     else
-        p_purchase->state = kMCPurchaseStateCancelled;
+        p_purchase->state = kMCPurchaseStateFailed;
 }
 
 bool MCCStringFromJava(JNIEnv *env, jstring p_jstring, char *&r_cstring)
@@ -474,7 +482,7 @@ JNIEXPORT void JNICALL Java_com_runrev_android_Engine_doPurchaseStateChanged(JNI
             MCPurchaseNotifyUpdate(t_purchase);
             
             // now, if the purchase is cancelled, confirm the notification
-            if (t_purchase->state == kMCPurchaseStateCancelled)
+            if (t_purchase->state == kMCPurchaseStateFailed)
             {
                 MCLog("purchase canceled, confirming notification", nil);
                 purchase_confirm(t_purchase);
@@ -513,7 +521,7 @@ JNIEXPORT void JNICALL Java_com_runrev_android_Engine_doConfirmNotificationRespo
                     t_purchase->state = kMCPurchaseStateComplete;
                     MCPurchaseNotifyUpdate(t_purchase);
                     break;
-                case kMCPurchaseStateCancelled:
+                case kMCPurchaseStateFailed:
                     break;
             }
             MCPurchaseRelease(t_purchase);

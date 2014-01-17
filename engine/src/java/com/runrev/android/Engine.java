@@ -16,16 +16,20 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 
 package com.runrev.android;
 
-import com.runrev.android.billing.*;
+import com.runrev.android.billing.MyPurchasingObserver;
+/*
 import com.runrev.android.billing.C.ResponseCode;
 import com.runrev.android.billing.PurchaseUpdate.Purchase;
 import com.runrev.android.billing.BillingService.RestoreTransactions;
 import com.runrev.android.billing.BillingService.GetPurchaseInformation;
 import com.runrev.android.billing.BillingService.ConfirmNotification;
 import com.runrev.android.billing.BillingService.RequestPurchase;
+ */
 
 import com.runrev.android.nativecontrol.NativeControlModule;
 import com.runrev.android.nativecontrol.VideoControl;
+
+import com.amazon.inapp.purchasing.*;
 
 import android.content.*;
 import android.content.res.*;
@@ -1881,7 +1885,148 @@ public class Engine extends View implements EngineApi
 ////////////////////////////////////////////////////////////////////////////////
 
 	// in-app purchasing
+    
+    private EnginePurchasingObserver mPurchasingObserver;
+    private Boolean started = false;
+    
+    private void initBilling()
+	{
+        mPurchasingObserver = new EnginePurchasingObserver(getActivity());
+        PurchasingManager.registerObserver(mPurchasingObserver);
+        Log.v(TAG, "IAP initialised");
+        started = true;
+        //PurchasingManager.initiateGetUserIdRequest();
+        //the <receiver> sections of the manifest are added by the standalone builder
+    }
+    
+    
+    /*Always equals true. The Amazon Appstore allows a customer to disable In-App Purchasing, the IAP workflow
+     will reflect this when the user is prompted to buy an item. There is no way for your app to know if a
+     user has disabled Amazon In-App Purchasing */
+	public boolean storeCanMakePurchase()
+	{
+        if (!started)
+        {
+            return false;
+        }
+		return true;
+	}
+    
+	public void storeSetUpdates(boolean enabled)
+	{
+        if (!started)
+        {
+            return;
+        }
+        
+		if (enabled)
+        {
+			PurchasingManager.registerObserver(mPurchasingObserver);
+            return;
+        }
+		else
+			return;
+	}
+    
+	public boolean storeRestorePurchases()
+	{
+        if (!started)
+        {
+            return false;
+        }
 
+		PurchasingManager.initiatePurchaseUpdatesRequest(MyPurchasingObserver.getPersistedOffset());
+        return true;
+	}
+    
+	public boolean purchaseSendRequest(int purchaseId, String productId, String developerPayload)
+	{
+        if (!started)
+        {
+            return false;
+        }
+
+        Log.v(TAG, "Purchase request started");
+		String requestId = PurchasingManager.initiatePurchaseRequest(productId);
+        Log.v(TAG, "Purchase request finished");
+        mPurchasingObserver.requestIds.put(requestId, productId);
+        
+        return true;
+	}
+    
+	public boolean purchaseConfirmDelivery(int purchaseId, String notificationId)
+	{
+        if (!started)
+        {
+            return false;
+        }
+        
+		// Amazon client is responsible for validating purchase receipts. Does that mean that this method does nothing?
+        return true;
+	}
+
+    private class EnginePurchasingObserver extends MyPurchasingObserver
+	{
+		public EnginePurchasingObserver(Activity pActivity)
+		{
+			super(pActivity);
+		}
+        
+        
+        /**
+         * Is invoked once the call from initiatePurchaseRequest is completed.
+         * On a successful response, a response object is passed which contains the request id, request status, and the
+         * receipt of the purchase.
+         *
+         * @param response
+         *            Response object containing a receipt of a purchase
+         */
+        public void onPurchaseResponse(PurchaseResponse response)
+        {
+            super.onPurchaseResponse(response);
+            
+            final boolean tVerified = true;
+            final int tPurchaseState = response.getPurchaseRequestStatus().ordinal();
+            final String tNotificationId = "";
+            final String tProductId = requestIds.get(response.getRequestId());
+            final String tOrderId = response.getRequestId();
+            final long tPurchaseTime = 1;
+            final String tDeveloperPayload = "";
+            final String tSignedData = "";
+            final String tSignature = "";
+            
+            post(new Runnable() {
+                public void run() {
+                    doPurchaseStateChanged(tVerified, tPurchaseState,
+                                           tNotificationId, tProductId, tOrderId,
+                                           tPurchaseTime, tDeveloperPayload, tSignedData, tSignature);
+                    if (m_wake_on_event)
+                        doProcess(false);
+                }
+            });
+
+            
+        }
+        
+        public void onPurchaseUpdatesResponse(final PurchaseUpdatesResponse response)
+        {
+            super.onPurchaseUpdatesResponse(response);
+            
+            final int tResponseCode = response.getPurchaseUpdatesRequestStatus().ordinal();
+			post(new Runnable() {
+				public void run() {
+					doRestoreTransactionsResponse(tResponseCode);
+					if (m_wake_on_event)
+						doProcess(false);
+				}
+			});
+            
+        }
+        
+		
+	}
+    
+/*
 	private static Class mBillingServiceClass = null;
 
 	public static Class getBillingServiceClass()
@@ -1944,9 +2089,9 @@ public class Engine extends View implements EngineApi
 	public boolean storeRestorePurchases()
 	{
 		if (mBilling == null)
-			return false;
-
-		return mBilling.restoreTransactions();
+            return false;
+        
+        return mBilling.restoreTransactions();
 	}
 
 	public boolean purchaseSendRequest(int purchaseId, String productId, String developerPayload)
@@ -1965,9 +2110,10 @@ public class Engine extends View implements EngineApi
 
 		return mBilling.confirmNotification(purchaseId, notificationId);
 	}
+*/
 
 ////////
-
+/*
 	private class EnginePurchaseObserver extends PurchaseObserver
 	{
 		public EnginePurchaseObserver(Activity pActivity)
@@ -2048,6 +2194,7 @@ public class Engine extends View implements EngineApi
 			});
 		}
 	}
+ */
 
 ////////////////////////////////////////////////////////////////////////////////
 
