@@ -47,6 +47,18 @@ fi
 
 export JAVASRC=$SRCROOT/engine/src/java
 
+# generate the  interface classes from the aidl files
+
+"$AIDL" -I"$JAVASRC" -p"$ANDROID_SDK/platforms/android-8/framework.aidl" "$JAVASRC/com/sec/android/iap/IAPServiceCallback.aidl"
+if [ $? != 0 ]; then
+	exit $?
+fi
+
+"$AIDL" -I"$JAVASRC" -p"$ANDROID_SDK/platforms/android-8/framework.aidl" "$JAVASRC/com/sec/android/iap/IAPConnector.aidl"
+if [ $? != 0 ]; then
+	exit $?
+fi
+
 # generate the MarketBillingService interface class from the aidl file
 "$AIDL" -I"JAVASRC" -p"$ANDROID_SDK/platforms/android-8/framework.aidl" "$JAVASRC/com/android/vending/billing/IMarketBillingService.aidl"
 if [ $? != 0 ]; then

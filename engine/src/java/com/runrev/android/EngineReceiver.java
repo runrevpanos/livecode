@@ -29,8 +29,7 @@ public class EngineReceiver extends BroadcastReceiver
     
     public void onReceive(Context context, Intent intent)
     {
-        if (!BillingReceiver.onReceive(context, intent) &&
-            !NotificationModule.onReceive(context, intent))
+        if (!NotificationModule.onReceive(context, intent))
         {
             Log.i(TAG, "unhandled intent: " + intent);
         }

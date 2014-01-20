@@ -63,6 +63,7 @@ LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/../thirdparty/libskia/include/ports \
 	$(LOCAL_PATH)/../thirdparty/libfreetype/include
 
+
 include $(BUILD_STATIC_LIBRARY)
 
 #########

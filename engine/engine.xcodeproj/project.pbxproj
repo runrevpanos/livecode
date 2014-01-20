@@ -780,6 +780,21 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1DFAE6C6188D307C00FFD876 /* IAPConnector.aidl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IAPConnector.aidl; sourceTree = "<group>"; };
+		1DFAE6C7188D307C00FFD876 /* IAPServiceCallback.aidl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IAPServiceCallback.aidl; sourceTree = "<group>"; };
+		1DFAE6D3188D4BB300FFD876 /* ItemList.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ItemList.java; sourceTree = "<group>"; };
+		1DFAE6D4188D4BB300FFD876 /* ItemsInboxList.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ItemsInboxList.java; sourceTree = "<group>"; };
+		1DFAE6D5188D4BB300FFD876 /* Main.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Main.java; sourceTree = "<group>"; };
+		1DFAE6D6188D4BB300FFD876 /* PurchaseOneItem.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = PurchaseOneItem.java; sourceTree = "<group>"; };
+		1DFAE6D8188D4BB300FFD876 /* ItemInboxListAdapter.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ItemInboxListAdapter.java; sourceTree = "<group>"; };
+		1DFAE6D9188D4BB300FFD876 /* ItemListAdapter.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ItemListAdapter.java; sourceTree = "<group>"; };
+		1DFAE6DB188D4BB300FFD876 /* SamsungIapHelper.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = SamsungIapHelper.java; sourceTree = "<group>"; };
+		1DFAE6DD188D4BB300FFD876 /* BaseVO.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = BaseVO.java; sourceTree = "<group>"; };
+		1DFAE6DE188D4BB300FFD876 /* ErrorVO.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ErrorVO.java; sourceTree = "<group>"; };
+		1DFAE6DF188D4BB300FFD876 /* InBoxVO.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = InBoxVO.java; sourceTree = "<group>"; };
+		1DFAE6E0188D4BB300FFD876 /* ItemVO.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ItemVO.java; sourceTree = "<group>"; };
+		1DFAE6E1188D4BB300FFD876 /* PurchaseVO.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = PurchaseVO.java; sourceTree = "<group>"; };
+		1DFAE6E2188D4BB300FFD876 /* VerificationVO.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = VerificationVO.java; sourceTree = "<group>"; };
 		3C03ED911134205A009DE406 /* socket_resolve.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = socket_resolve.cpp; path = src/socket_resolve.cpp; sourceTree = "<group>"; };
 		3C0A3CC310BAF6120074D630 /* iquantization.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = iquantization.cpp; path = src/iquantization.cpp; sourceTree = "<group>"; };
 		3C0A3CC510BAF63B0074D630 /* iquantization.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = iquantization.h; path = src/iquantization.h; sourceTree = "<group>"; };
@@ -1530,6 +1545,84 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1DFAE6BF188D306D00FFD876 /* sec */ = {
+			isa = PBXGroup;
+			children = (
+				1DFAE6C4188D307C00FFD876 /* android */,
+			);
+			path = sec;
+			sourceTree = "<group>";
+		};
+		1DFAE6C4188D307C00FFD876 /* android */ = {
+			isa = PBXGroup;
+			children = (
+				1DFAE6C5188D307C00FFD876 /* iap */,
+			);
+			path = android;
+			sourceTree = "<group>";
+		};
+		1DFAE6C5188D307C00FFD876 /* iap */ = {
+			isa = PBXGroup;
+			children = (
+				1DFAE6D1188D4BB300FFD876 /* sample */,
+				1DFAE6C6188D307C00FFD876 /* IAPConnector.aidl */,
+				1DFAE6C7188D307C00FFD876 /* IAPServiceCallback.aidl */,
+			);
+			path = iap;
+			sourceTree = "<group>";
+		};
+		1DFAE6D1188D4BB300FFD876 /* sample */ = {
+			isa = PBXGroup;
+			children = (
+				1DFAE6D2188D4BB300FFD876 /* activity */,
+				1DFAE6D7188D4BB300FFD876 /* adapter */,
+				1DFAE6DA188D4BB300FFD876 /* helper */,
+				1DFAE6DC188D4BB300FFD876 /* vo */,
+			);
+			path = sample;
+			sourceTree = "<group>";
+		};
+		1DFAE6D2188D4BB300FFD876 /* activity */ = {
+			isa = PBXGroup;
+			children = (
+				1DFAE6D3188D4BB300FFD876 /* ItemList.java */,
+				1DFAE6D4188D4BB300FFD876 /* ItemsInboxList.java */,
+				1DFAE6D5188D4BB300FFD876 /* Main.java */,
+				1DFAE6D6188D4BB300FFD876 /* PurchaseOneItem.java */,
+			);
+			path = activity;
+			sourceTree = "<group>";
+		};
+		1DFAE6D7188D4BB300FFD876 /* adapter */ = {
+			isa = PBXGroup;
+			children = (
+				1DFAE6D8188D4BB300FFD876 /* ItemInboxListAdapter.java */,
+				1DFAE6D9188D4BB300FFD876 /* ItemListAdapter.java */,
+			);
+			path = adapter;
+			sourceTree = "<group>";
+		};
+		1DFAE6DA188D4BB300FFD876 /* helper */ = {
+			isa = PBXGroup;
+			children = (
+				1DFAE6DB188D4BB300FFD876 /* SamsungIapHelper.java */,
+			);
+			path = helper;
+			sourceTree = "<group>";
+		};
+		1DFAE6DC188D4BB300FFD876 /* vo */ = {
+			isa = PBXGroup;
+			children = (
+				1DFAE6DD188D4BB300FFD876 /* BaseVO.java */,
+				1DFAE6DE188D4BB300FFD876 /* ErrorVO.java */,
+				1DFAE6DF188D4BB300FFD876 /* InBoxVO.java */,
+				1DFAE6E0188D4BB300FFD876 /* ItemVO.java */,
+				1DFAE6E1188D4BB300FFD876 /* PurchaseVO.java */,
+				1DFAE6E2188D4BB300FFD876 /* VerificationVO.java */,
+			);
+			path = vo;
+			sourceTree = "<group>";
+		};
 		4D055BB11079F6E7007F6E13 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1941,6 +2034,7 @@
 		4DD54D15134F591500981610 /* com */ = {
 			isa = PBXGroup;
 			children = (
+				1DFAE6BF188D306D00FFD876 /* sec */,
 				4DD54D16134F591500981610 /* runrev */,
 			);
 			name = com;
