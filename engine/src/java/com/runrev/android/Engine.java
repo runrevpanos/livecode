@@ -16,13 +16,7 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 
 package com.runrev.android;
 
-import com.runrev.android.billing.*;
-import com.runrev.android.billing.C.ResponseCode;
-import com.runrev.android.billing.PurchaseUpdate.Purchase;
-import com.runrev.android.billing.BillingService.RestoreTransactions;
-import com.runrev.android.billing.BillingService.GetPurchaseInformation;
-import com.runrev.android.billing.BillingService.ConfirmNotification;
-import com.runrev.android.billing.BillingService.RequestPurchase;
+//import com.runrev.android.billing.*;
 
 import com.sec.android.iap.sample.helper.SamsungIapHelper;
 import com.sec.android.iap.sample.helper.SamsungIapHelper.OnGetInboxListListener;
@@ -2122,7 +2116,7 @@ public class Engine extends View implements EngineApi
     private void initBilling()
 	{
         //TODO
-        this.itemGroupId = "REPLACE_THIS_with_the_one_found_in_Samsung_Apps_Seller_Office";
+        this.itemGroupId = "100000102660";
         initHelper();
 	}
 
