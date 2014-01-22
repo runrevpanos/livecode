@@ -2083,6 +2083,29 @@ public class Engine extends View implements EngineApi
             helper.dismissProgressDialog();
             helper.showIapDialog(getActivity(), "title_iap", "msg_payment_cancelled", false, null);
         }
+
+        final boolean tVerified = true;
+        //TODO : Check status code in accordance with the purchase state in mblandroidstore.cpp
+        final int tPurchaseState = statusCode;
+        final String tNotificationId = "";
+        final String tProductId = itemId;
+        final String tOrderId = "";
+        final long tPurchaseTime = 1;
+        final String tDeveloperPayload = "";
+        final String tSignedData = "";
+        final String tSignature = "";
+
+        post(new Runnable()
+        {
+            public void run()
+            {
+                doPurchaseStateChanged(tVerified, tPurchaseState,
+                tNotificationId, tProductId, tOrderId,
+                tPurchaseTime, tDeveloperPayload, tSignedData, tSignature);
+                if (m_wake_on_event)
+                doProcess(false);
+            }
+        });
     }
 
     /////////////////
