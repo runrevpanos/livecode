@@ -1977,7 +1977,10 @@ public class Engine extends View implements EngineApi
         // Not sure if this is needed, since inventory is queried when the app is launched (initBilling())
         /*
         if (mHelper == null)
+        {
+            
 			return false;
+        }
         
         Log.d(TAG, "Querying inventory.");
         mHelper.queryInventoryAsync(mGotInventoryListener);
@@ -2090,30 +2093,37 @@ public class Engine extends View implements EngineApi
             }
             
             Log.d(TAG, "Purchase successful.");
-            
-            final boolean tVerified = true;
-            final int tPurchaseState = purchase.getPurchaseState();
-            final String tNotificationId = purchase.getSku();
-            final String tProductId = purchase.getSku();
-            final String tOrderId = purchase.getOrderId();
-            final long tPurchaseTime = purchase.getPurchaseTime();
-            final String tDeveloperPayload = purchase.getDeveloperPayload();
-            final String tSignedData = "";
-            final String tSignature = purchase.getSignature();
-            
-            post(new Runnable()
-            {
-                public void run()
-                {
-                    doPurchaseStateChanged(tVerified, tPurchaseState,
-                                           tNotificationId, tProductId, tOrderId,
-                                           tPurchaseTime, tDeveloperPayload, tSignedData, tSignature);
-                    if (m_wake_on_event)
-                        doProcess(false);
-                }
-            });
+    
+            offerPurchasedItems(purchase);
+    
         }
     };
+
+
+    void offerPurchasedItems(Purchase purchase)
+    {
+        final boolean tVerified = true;
+        final int tPurchaseState = purchase.getPurchaseState();
+        final String tNotificationId = purchase.getSku();
+        final String tProductId = purchase.getSku();
+        final String tOrderId = purchase.getOrderId();
+        final long tPurchaseTime = purchase.getPurchaseTime();
+        final String tDeveloperPayload = purchase.getDeveloperPayload();
+        final String tSignedData = "";
+        final String tSignature = purchase.getSignature();
+
+        post(new Runnable()
+        {
+            public void run()
+            {
+                doPurchaseStateChanged(tVerified, tPurchaseState,
+                tNotificationId, tProductId, tOrderId,
+                tPurchaseTime, tDeveloperPayload, tSignedData, tSignature);
+                if (m_wake_on_event)
+                    doProcess(false);
+            }
+        });
+    }
 
 
     // Called when consumption is complete
@@ -2159,6 +2169,10 @@ public class Engine extends View implements EngineApi
 
             setWaitScreen(false);
             Log.d(TAG, "Initial inventory query finished; enabling main UI.");
+
+            List<Purchase> purchaseList = inventory.getallpurchases();
+            for (Purchase p : purchaseList)
+                offerPurchasedItems(p);
         }
     };
 
