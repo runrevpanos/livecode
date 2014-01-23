@@ -1895,6 +1895,7 @@ public class Engine extends View implements EngineApi
         PurchasingManager.registerObserver(mPurchasingObserver);
         Log.v(TAG, "IAP initialised");
         started = true;
+        storeRestorePurchases();
         //PurchasingManager.initiateGetUserIdRequest();
         //the <receiver> sections of the manifest are added by the standalone builder
     }
@@ -2012,14 +2013,66 @@ public class Engine extends View implements EngineApi
         {
             super.onPurchaseUpdatesResponse(response);
             
-            final int tResponseCode = response.getPurchaseUpdatesRequestStatus().ordinal();
-			post(new Runnable() {
-				public void run() {
-					doRestoreTransactionsResponse(tResponseCode);
-					if (m_wake_on_event)
-						doProcess(false);
-				}
-			});
+            // No implementation required when dealing solely with consumables
+            switch (response.getPurchaseUpdatesRequestStatus())
+            {
+                case SUCCESSFUL:
+                    // Check for revoked SKUs
+                    for (final String sku : response.getRevokedSkus())
+                    {
+                        Log.v(TAG, "Revoked Sku:" + sku);
+                    }
+                    
+                    // Process receipts
+                    for (final Receipt receipt : response.getReceipts())
+                    {
+                        switch (receipt.getItemType())
+                        {
+                            case ENTITLED:
+                            {
+                                // If the receipt is for an entitlement,the customer is re-entitled.
+                                // Add re-entitlement code here
+                                final boolean tVerified = true;
+                                final int tPurchaseState = 0; //purchase state for success
+                                final String tNotificationId = "";
+                                final String tProductId = receipt.getSku();;
+                                final String tOrderId = "";
+                                final long tPurchaseTime = 1;
+                                final String tDeveloperPayload = "";
+                                final String tSignedData = "";
+                                final String tSignature = "";
+                                
+                                post(new Runnable() {
+                                    public void run() {
+                                        doPurchaseStateChanged(tVerified, tPurchaseState,
+                                                               tNotificationId, tProductId, tOrderId,
+                                                               tPurchaseTime, tDeveloperPayload, tSignedData, tSignature);
+                                        if (m_wake_on_event)
+                                            doProcess(false);
+                                    }
+                                });
+                                break;
+                            }
+                            case SUBSCRIPTION:
+                                // Purchase Updates for subscriptions can be done here in one of two ways:
+                                // 1. Use the receipts to determineif the user currently has an active subscription
+                                // 2. Use the receipts to create a subscription history for your customer.
+                                break;
+                        }
+                    }
+                    
+                    final Offset newOffset = response.getOffset();
+                    if (response.isMore()) {
+                        Log.v(TAG, "Initiating Another Purchase Updates with offset: "
+                              + newOffset.toString());
+                        PurchasingManager.initiatePurchaseUpdatesRequest(newOffset);
+                    }
+                    break;
+                case FAILED:
+                    // Provide the user access to any previously persisted entitlements.
+                    break;
+            }
+
             
         }
         

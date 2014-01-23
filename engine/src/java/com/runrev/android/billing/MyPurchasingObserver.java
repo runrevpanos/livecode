@@ -108,6 +108,7 @@ public class MyPurchasingObserver extends BasePurchasingObserver
         Log.v(TAG, "PurchaseUpdatesRequestStatus:" + response.getPurchaseUpdatesRequestStatus());
         Log.v(TAG, "RequestID:" + response.getRequestId());
         
+        /*
         // No implementation required when dealing solely with consumables
         switch (response.getPurchaseUpdatesRequestStatus())
         {
@@ -146,6 +147,7 @@ public class MyPurchasingObserver extends BasePurchasingObserver
                 // Provide the user access to any previously persisted entitlements.
                 break;
         }
+         */
     }
     
     /**
