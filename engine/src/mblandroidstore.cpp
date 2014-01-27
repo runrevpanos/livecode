@@ -45,10 +45,27 @@ typedef enum
     RESULT_ERROR,
 } MCAndroidResponseCode;
 
+
+/*
+// From Samsung IAP: status code passed to 3rd party application
+// ========================================================================
+
+final public static int IAP_ERROR_NONE                   = 0;
+final public static int IAP_PAYMENT_IS_CANCELED          = 1;
+final public static int IAP_ERROR_INITIALIZATION         = -1000;
+final public static int IAP_ERROR_NEED_APP_UPGRADE       = -1001;
+final public static int IAP_ERROR_COMMON                 = -1002;
+final public static int IAP_ERROR_ALREADY_PURCHASED      = -1003;
+final public static int IAP_ERROR_WHILE_RUNNING          = -1004;
+final public static int IAP_ERROR_PRODUCT_DOES_NOT_EXIST = -1005;
+final public static int IAP_ERROR_CONFIRM_INBOX          = -1006;
+ */
 typedef enum
 {
-    PURCHASED,
-    CANCELED,
+    //TODO: place purchased first
+    PURCHASED = 0,
+    CANCELED = 1,
+    ALREADY_OWNED = -1003,
     REFUNDED,
 } MCAndroidPurchaseState;
 
@@ -331,6 +348,11 @@ void MCPurchaseVerify(MCPurchase *p_purchase, bool p_verified)
                     p_purchase->state = kMCPurchaseStateRefunded;
                     break;
                     
+                case ALREADY_OWNED:
+                    //MCLog("verified refunded purchase", nil);
+                    p_purchase->state = kMCPurchaseStateAlreadyOwned;
+                    break;
+                    
                 default:
                     break;
             }
@@ -356,6 +378,8 @@ void update_purchase_state(MCPurchase *p_purchase, int32_t p_state, bool p_verif
         p_purchase->state = kMCPurchaseStatePaymentReceived;
     else if (p_state == REFUNDED)
         p_purchase->state = kMCPurchaseStateRefunded;
+    else if (p_state == ALREADY_OWNED)
+        p_purchase->state = kMCPurchaseStateAlreadyOwned;
     else
         p_purchase->state = kMCPurchaseStateCancelled;
 }
@@ -507,6 +531,7 @@ JNIEXPORT void JNICALL Java_com_runrev_android_Engine_doConfirmNotificationRespo
         {
             switch (t_purchase->state)
             {
+                //??case kMCPurchaseStateAlreadyOwned:
                 case kMCPurchaseStatePaymentReceived:
                 case kMCPurchaseStateRefunded:
                 case kMCPurchaseStateRestored:

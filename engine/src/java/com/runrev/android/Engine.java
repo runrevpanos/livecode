@@ -2074,6 +2074,7 @@ public class Engine extends View implements EngineApi
             }
             else
             {
+                
                 helper.dismissProgressDialog();
                 helper.showIapDialog(getActivity(), "title_iap", errorString, false, null);
             }
@@ -2139,7 +2140,7 @@ public class Engine extends View implements EngineApi
     private void initBilling()
 	{
         //TODO
-        this.itemGroupId = "100000102660";
+        this.itemGroupId = "100000102710";
         initHelper();
 	}
 

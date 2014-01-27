@@ -69,6 +69,7 @@ static struct {const char *name; MCPurchaseState state;} s_purchase_states[] =
 	{"restored", kMCPurchaseStateRestored},
 	{"cancelled", kMCPurchaseStateCancelled},
     {"refunded", kMCPurchaseStateRefunded},
+    {"alreadyOwned", kMCPurchaseStateAlreadyOwned},
 	{"error", kMCPurchaseStateError},
     {"unverified", kMCPurchaseStateUnverified},
 };

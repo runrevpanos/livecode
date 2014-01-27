@@ -57,6 +57,7 @@ enum MCPurchaseState
 	kMCPurchaseStateRestored,
 	kMCPurchaseStateCancelled,
 	kMCPurchaseStateRefunded,
+    kMCPurchaseStateAlreadyOwned,
 	kMCPurchaseStateError,
     kMCPurchaseStateUnverified,
 	
