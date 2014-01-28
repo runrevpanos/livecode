@@ -1942,7 +1942,28 @@ public class Engine extends View implements EngineApi
         {
             for (InBoxVO inboxItem : inboxList)
             {
-                ownedItems.add(inboxItem.getItemId());
+                final String tItemId = inboxItem.getItemId();
+                ownedItems.add(tItemId);
+
+
+                // Restore previously purchased items (only non-consumables and subscriptions)
+                if(!inboxItem.getType().equals("00"))
+                {
+                    Log.d(TAG, "Item restored :" + tItemId);
+                    
+                    post(new Runnable()
+                    {
+                        public void run()
+                        {
+                            doPurchaseStateChanged(true, 0,
+                            "", tItemId, "",
+                            1, "", "", "");
+                            if (m_wake_on_event)
+                                doProcess(false);
+                        }
+                    });
+                }
+
             }
 
             if (pendingPurchaseItemId != null)
