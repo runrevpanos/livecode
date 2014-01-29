@@ -1988,7 +1988,8 @@ public class Engine extends View implements EngineApi
 		return true;
 	}
     
-    // Create and send a new purchase request 
+    // Create and send a new purchase request
+    //TODO : Handle subscriptions
 	public boolean purchaseSendRequest(int purchaseId, String productId, String developerPayload)
 	{
 		if (mHelper == null)
