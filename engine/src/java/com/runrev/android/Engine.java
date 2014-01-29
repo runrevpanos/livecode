@@ -1985,12 +1985,32 @@ public class Engine extends View implements EngineApi
         public void onPurchaseResponse(PurchaseResponse response)
         {
             super.onPurchaseResponse(response);
+            final String tProductId;
+  
+            /*Q: Why do I get a different SKU back when I initiate a purchase for my subscription SKU?
+             A: A subscription is comprised of a non-buyable parent SKU and one or more child term SKUs. This setup prevents users from purchasing multiple subscriptions of the same product. The non-buyable parent represents the product being purchased and is the SKU returned in the purchase response. The child SKUs represent the different subscription terms and are used to initiate the purchase. Subscription terms and charges are handled by Amazon and your app only needs to check whether a subscription is valid.
+             */
+
+            
+            switch (response.getPurchaseRequestStatus())
+            {
+                case SUCCESSFUL:
+                    Receipt receipt = response.getReceipt();
+                    // Don't use tProductId = requestIds.get(response.getRequestId()), it does not work on subscriptions because it returns the child SKU, but we need the parent SKU
+                    tProductId = receipt.getSku();
+                    Log.d(TAG, "PRODUCT ID IS : " + tProductId);
+                    break;
+                default:
+                    tProductId = requestIds.get(response.getRequestId());
+                    break;
+            }
+            
             
             final boolean tVerified = true;
             final int tPurchaseState = response.getPurchaseRequestStatus().ordinal();
             final String tNotificationId = "";
-            final String tProductId = requestIds.get(response.getRequestId());
-            final String tOrderId = response.getRequestId();
+            
+            final String tOrderId = "";//response.getRequestId();
             final long tPurchaseTime = 1;
             final String tDeveloperPayload = "";
             final String tSignedData = "";
@@ -2035,7 +2055,7 @@ public class Engine extends View implements EngineApi
                                 final boolean tVerified = true;
                                 final int tPurchaseState = 0; //purchase state for success
                                 final String tNotificationId = "";
-                                final String tProductId = receipt.getSku();;
+                                final String tProductId = receipt.getSku();
                                 final String tOrderId = "";
                                 final long tPurchaseTime = 1;
                                 final String tDeveloperPayload = "";
@@ -2057,6 +2077,27 @@ public class Engine extends View implements EngineApi
                                 // Purchase Updates for subscriptions can be done here in one of two ways:
                                 // 1. Use the receipts to determineif the user currently has an active subscription
                                 // 2. Use the receipts to create a subscription history for your customer.
+                                final boolean tVerified = true;
+                                final int tPurchaseState = 0; //purchase state for success
+                                final String tNotificationId = "";
+                                //NOTE : the getSku() method returns the parent SKU of the subscription
+                                final String tProductId = receipt.getSku();
+                                final String tOrderId = "";
+                                final long tPurchaseTime = 1;
+                                final String tDeveloperPayload = "";
+                                final String tSignedData = "";
+                                final String tSignature = "";
+                                
+                                post(new Runnable() {
+                                    public void run() {
+                                        doPurchaseStateChanged(tVerified, tPurchaseState,
+                                                               tNotificationId, tProductId, tOrderId,
+                                                               tPurchaseTime, tDeveloperPayload, tSignedData, tSignature);
+                                        if (m_wake_on_event)
+                                            doProcess(false);
+                                    }
+                                });
+
                                 break;
                         }
                     }
