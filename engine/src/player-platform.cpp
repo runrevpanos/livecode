@@ -2133,6 +2133,11 @@ void MCPlayer::currenttimechanged(void)
     redrawcontroller();
 }
 
+void MCPlayer::movieloaded(void)
+{
+    timer(MCM_movie_loaded, nil);
+}
+
 void MCPlayer::moviefinished(void)
 {
     // PM-2014-08-06: [[ Bug 13104 ]] Set rate to zero when movie finish

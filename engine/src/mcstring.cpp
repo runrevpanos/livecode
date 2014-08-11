@@ -288,6 +288,7 @@ MCNameRef MCM_mouse_within;
 MCNameRef MCM_move_control;
 MCNameRef MCM_move_stack;
 MCNameRef MCM_move_stopped;
+MCNameRef MCM_movie_loaded;
 MCNameRef MCM_movie_touched;
 MCNameRef MCM_name_changed;
 MCNameRef MCM_new_background;
@@ -589,6 +590,7 @@ void MCU_initialize_names(void)
 	/* UNCHECKED */ MCNameCreateWithCString("openStack", MCM_open_stack);
 	/* UNCHECKED */ MCNameCreateWithCString("optionKeyDown", MCM_option_key_down);
 	/* UNCHECKED */ MCNameCreateWithCString("pasteKey", MCM_paste_key);
+    /* UNCHECKED */ MCNameCreateWithCString("playerMovieLoaded", MCM_movie_loaded);
 	/* UNCHECKED */ MCNameCreateWithCString("playPaused", MCM_play_paused);
 	/* UNCHECKED */ MCNameCreateWithCString("playStarted", MCM_play_started);
 	/* UNCHECKED */ MCNameCreateWithCString("playStopped", MCM_play_stopped);
@@ -874,6 +876,7 @@ void MCU_finalize_names(void)
 	MCNameDelete(MCM_open_stack);
 	MCNameDelete(MCM_option_key_down);
 	MCNameDelete(MCM_paste_key);
+    MCNameDelete(MCM_movie_loaded);
 	MCNameDelete(MCM_play_paused);
 	MCNameDelete(MCM_play_started);
 	MCNameDelete(MCM_play_stopped);

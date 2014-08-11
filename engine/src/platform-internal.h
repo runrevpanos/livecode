@@ -286,6 +286,7 @@ void MCPlatformCallbackSendPlayerFrameChanged(MCPlatformPlayerRef player);
 void MCPlatformCallbackSendPlayerMarkerChanged(MCPlatformPlayerRef player, uint32_t time);
 void MCPlatformCallbackSendPlayerCurrentTimeChanged(MCPlatformPlayerRef player);
 void MCPlatformCallbackSendPlayerFinished(MCPlatformPlayerRef player);
+void MCPlatformCallbackSendPlayerMovieLoaded(MCPlatformPlayerRef player);
 
 void MCPlatformCallbackSendSoundFinished(MCPlatformSoundRef sound);
 

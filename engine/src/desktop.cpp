@@ -1144,6 +1144,17 @@ void MCPlatformHandlePlayerCurrentTimeChanged(MCPlatformPlayerRef p_player)
     t_player -> currenttimechanged();
 }
 
+void MCPlatformHandlePlayerMovieLoaded(MCPlatformPlayerRef p_player)
+{
+    MCPlayer *t_player;
+    t_player = find_player(p_player);
+    if (t_player == nil)
+        return;
+    
+    t_player -> movieloaded();
+}
+
+
 void MCPlatformHandlePlayerFinished(MCPlatformPlayerRef p_player)
 {
     MCPlayer *t_player;

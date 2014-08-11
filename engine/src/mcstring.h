@@ -257,6 +257,7 @@ extern MCNameRef MCM_open_field;
 extern MCNameRef MCM_open_stack;
 extern MCNameRef MCM_option_key_down;
 extern MCNameRef MCM_paste_key;
+extern MCNameRef MCM_movie_loaded;
 extern MCNameRef MCM_play_paused;
 extern MCNameRef MCM_play_started;
 extern MCNameRef MCM_play_stopped;

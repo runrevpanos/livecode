@@ -226,6 +226,7 @@ public:
     void selectionchanged(void);
     void currenttimechanged(void);
 	void moviefinished(void);
+    void movieloaded(void);
     
     MCRectangle getcontrollerrect(void);
     MCRectangle getcontrollerpartrect(const MCRectangle& total_rect, int part);

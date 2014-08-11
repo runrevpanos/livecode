@@ -82,6 +82,7 @@ public:
     
     void MovieFinished(void);
     void TimeJumped(void);
+    void MovieLoaded(void);
     
     AVPlayer *getPlayer(void);
     
@@ -279,6 +280,12 @@ MCAVFoundationPlayer::~MCAVFoundationPlayer(void)
     MCMemoryDeleteArray(m_markers);
     
     [m_lock release];
+}
+
+void MCAVFoundationPlayer::MovieLoaded(void)
+{
+    //if (!m_synchronizing)
+        MCPlatformCallbackSendPlayerMovieLoaded(this);
 }
 
 void MCAVFoundationPlayer::TimeJumped(void)
@@ -630,6 +637,13 @@ void MCAVFoundationPlayer::Load(const char *p_filename_or_url, bool p_is_url)
     
     
     m_time_scale = [m_player currentItem] . asset . duration . timescale;
+    
+    if ([m_player status] == AVPlayerStatusReadyToPlay)
+    {
+        MCLog("============= READY ===============", nil);
+        MCLog("Duration is %d", m_player.currentItem.asset.duration);
+        MovieLoaded();
+    }
 }
 
 void MCAVFoundationPlayer::Synchronize(void)

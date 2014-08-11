@@ -60,6 +60,8 @@ void MCPlatformHandleViewFocusSwitched(MCPlatformWindowRef window, uint32_t id);
 void MCPlatformHandlePlayerFrameChanged(MCPlatformPlayerRef player);
 void MCPlatformHandlePlayerMarkerChanged(MCPlatformPlayerRef player, uint32_t time);
 void MCPlatformHandlePlayerCurrentTimeChanged(MCPlatformPlayerRef player);
+void MCPlatformHandlePlayerMovieLoaded(MCPlatformPlayerRef player);
+
 void MCPlatformHandlePlayerFinished(MCPlatformPlayerRef player);
 
 void MCPlatformHandleSoundFinished(MCPlatformSoundRef sound);
@@ -385,6 +387,12 @@ void MCPlatformCallbackSendPlayerCurrentTimeChanged(MCPlatformPlayerRef p_player
 {
     MCLog("Player(%p) -> CurrentTimeChanged()", p_player);
     MCPlatformHandlePlayerCurrentTimeChanged(p_player);
+}
+
+void MCPlatformCallbackSendPlayerMovieLoaded(MCPlatformPlayerRef p_player)
+{
+    MCLog("Player(%p) -> MovieLoaded()", p_player);
+    MCPlatformHandlePlayerMovieLoaded(p_player);
 }
 
 void MCPlatformCallbackSendPlayerFinished(MCPlatformPlayerRef p_player)
