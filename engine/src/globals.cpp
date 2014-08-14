@@ -371,6 +371,9 @@ MCVariable *MCurlresult;
 Boolean MCexitall;
 int4 MCretcode;
 Boolean MCrecording;
+#ifdef FEATURE_PLATFORM_RECORDER
+MCPlatformSoundRecorderRef MCrecorder;
+#endif
 
 // MW-2012-03-08: [[ StackFile5500 ]] Make stackfile version 5.5 the default.
 uint4 MCstackfileversion = 5500;
@@ -748,6 +751,9 @@ void X_clear_globals(void)
 	MCexitall = False;
 	MCretcode = 0;
 	MCrecording = False;
+#ifdef FEATURE_PLATFORM_RECORDER
+    MCrecorder = nil;
+#endif
 	// MW-2012-03-08: [[ StackFile5500 ]] Make 5.5 stackfile version the default.
 	MCstackfileversion = 5500;
 	MClook = LF_MOTIF;
@@ -965,6 +971,11 @@ bool X_open(int argc, char *argv[], char *envp[])
 	MCdispatcher = new MCDispatch;
     MCdispatcher -> add_transient_stack(MCtooltip);
 
+	// IM-2014-08-14: [[ Bug 12372 ]] Pixel scale setup needs to happen before the
+	// creation of MCscreen to ensure screen rects are scaled/unscaled as appropriate.
+	// IM-2014-01-27: [[ HiDPI ]] Initialize pixel scale settings
+	MCResInitPixelScaling();
+	
 	if (MCnoui)
 		MCscreen = new MCUIDC;
 	else
@@ -978,9 +989,6 @@ bool X_open(int argc, char *argv[], char *envp[])
 		MCscreen->alloccolor(MClinkatts.hilitecolor);
 		MCscreen->alloccolor(MClinkatts.visitedcolor);
 	}
-	
-	// IM-2014-01-27: [[ HiDPI ]] Initialize pixel scale settings
-	MCResInitPixelScaling();
 	
 	// MW-2012-02-14: [[ FontRefs ]] Open the dispatcher after we have an open
 	//   screen, otherwise we don't have a root fontref!
@@ -1051,11 +1059,19 @@ int X_close(void)
 	MCselected->clear(False);
 
 	MCU_play_stop();
+#ifdef FEATURE_PLATFORM_RECORDER
+    if (MCrecorder != nil)
+    {
+        MCPlatformSoundRecorderStop(MCrecorder);
+        MCPlatformSoundRecorderRelease(MCrecorder);
+    }
+#else
 	if (MCrecording)
 	{
 		extern void MCQTStopRecording(void);
 		MCQTStopRecording();
 	}
+#endif
 	MClockmessages = True;
 	MCS_killall();
 
