@@ -73,6 +73,7 @@ public:
     
     void MovieFinished(void);
     void CurrentTimeChanged(void);
+    void MovieLoaded(void);
     
 protected:
     virtual void Realize(void);
@@ -197,6 +198,12 @@ MCQTKitPlayer::~MCQTKitPlayer(void)
 	[m_movie release];
     
     MCMemoryDeleteArray(m_markers);
+}
+
+void MCQTKitPlayer::MovieLoaded(void)
+{
+    //if (!m_synchronizing)
+    MCPlatformCallbackSendPlayerMovieLoaded(this);
 }
 
 void MCQTKitPlayer::MovieFinished(void)
@@ -443,6 +450,17 @@ void MCQTKitPlayer::Load(const char *p_filename, bool p_is_url)
 	// as it works on the platforms we support, it should be fine.
 	[m_movie setDraggable: NO];
 	
+    // PM-2014-08-15 [[ Bug 13067 ]] This message is sent when the movie atom has loaded and it's safe to query movie properties
+    if (m_movie)
+    {
+        long t_load_state;
+        extern NSString **QTMovieLoadStateAttribute_ptr;
+        t_load_state = [[m_movie attributeForKey:*QTMovieLoadStateAttribute_ptr] longValue];
+        if (t_load_state >= QTMovieLoadStateLoaded)
+            MovieLoaded();
+    }
+     
+     
     [m_view setControllerVisible: NO];
     
 	[m_view setMovie: m_movie];

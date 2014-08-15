@@ -680,10 +680,9 @@ void MCAVFoundationPlayer::Load(const char *p_filename_or_url, bool p_is_url)
     
     m_time_scale = [m_player currentItem] . asset . duration . timescale;
     
+    // PM-2014-08-15 [[ Bug 13067 ]] Sent when movie is ready to play
     if ([m_player status] == AVPlayerStatusReadyToPlay)
     {
-        MCLog("============= READY ===============", nil);
-        MCLog("Duration is %d", m_player.currentItem.asset.duration);
         MovieLoaded();
     }
 }
