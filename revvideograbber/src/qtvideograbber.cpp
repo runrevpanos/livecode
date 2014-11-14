@@ -750,7 +750,6 @@ videograbberModalFilterProc (DialogPtr theDialog, const EventRecord *theEvent,
 	return (handled);
 }
 
-
 void CQTVideoGrabber::AudioDefaultDialog(void)
 {
 	//short	width, height;
@@ -762,58 +761,9 @@ void CQTVideoGrabber::AudioDefaultDialog(void)
     
     // AL-2014-08-14: [[ Bug 12966 ]] Replace deprecated quicktime functions for MacOSX
 #ifdef _MACOSX
-    ComponentInstance ci;
-    OpenADefaultComponent(StandardCompressionType, StandardCompressionSubTypeAudio, &ci);
+    extern void CQTVideoGrabberOpenDialog(SGChannel *channel);
     
-    AudioStreamBasicDescription t_description;
-    
-    AudioChannelLayoutTag t_layout_tags[] =
-    {
-        kAudioChannelLayoutTag_UseChannelDescriptions,
-        kAudioChannelLayoutTag_Mono,
-        kAudioChannelLayoutTag_Stereo,
-    };
-    
-    QTSetComponentProperty(ci, kQTPropertyClass_SCAudio, kQTSCAudioPropertyID_ClientRestrictedChannelLayoutTagList,sizeof(t_layout_tags), t_layout_tags);
-    
-    if (err == noErr)
-        err = SCRequestImageSettings(ci);
-    
-	if (err == noErr)
-        err = QTGetComponentProperty(ci, kQTPropertyClass_SCAudio,kQTSCAudioPropertyID_BasicDescription,sizeof(t_description), &t_description, NULL);
-    
-    if (err == noErr)
-	{
-        CFArrayRef t_codec_settings = nil;
-        void *t_magic_cookie = nil;
-        UInt32 t_magic_cookie_size = 0;
-        
-        QTGetComponentProperty(ci, kQTPropertyClass_SCAudio,
-                               kQTSCAudioPropertyID_CodecSpecificSettingsArray,
-                               sizeof(t_codec_settings), &t_codec_settings, NULL);
-        
-        if (!t_codec_settings &&
-            (noErr == QTGetComponentPropertyInfo(ci, kQTPropertyClass_SCAudio,
-                                                 kQTSCAudioPropertyID_MagicCookie,
-                                                 NULL, &t_magic_cookie_size, NULL)) && t_magic_cookie_size)
-        {
-            MCMemoryAllocate(t_magic_cookie_size, t_magic_cookie);
-            QTGetComponentProperty(ci, kQTPropertyClass_SCAudio,
-                                   kQTSCAudioPropertyID_MagicCookie,
-                                   t_magic_cookie_size, t_magic_cookie, &t_magic_cookie_size);
-        }
-        
-        if (err == noErr)
-            err = QTSetComponentProperty(soundchannel, kQTPropertyClass_SGAudio, kQTSGAudioPropertyID_StreamFormat, sizeof(t_description), &t_description);
-        
-        // Set any additional settings for this configuration
-        if (t_magic_cookie_size != 0)
-                QTSetComponentProperty(soundchannel, kQTPropertyClass_SCAudio, kQTSCAudioPropertyID_MagicCookie,
-                                       t_magic_cookie_size, t_magic_cookie);
-        else if (t_codec_settings)
-                QTSetComponentProperty(soundchannel, kQTPropertyClass_SCAudio, kQTSCAudioPropertyID_CodecSpecificSettingsArray,
-                                       sizeof(t_codec_settings), t_codec_settings);
-    }
+    CQTVideoGrabberOpenDialog(&soundchannel);
 #else
 	SGModalFilterUPP	videograbberModalFilterUPP;
 	videograbberModalFilterUPP = (SGModalFilterUPP)NewSGModalFilterUPP(videograbberModalFilterProc);
@@ -840,9 +790,6 @@ void CQTVideoGrabber::DoDialog()
 	// The pause that refreshes
 	err = SGPause (videograbber, False);
 }
-
-
-
 
 
 
