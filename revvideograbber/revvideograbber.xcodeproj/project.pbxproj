@@ -20,6 +20,7 @@
 		4D84DC72132C17E4004604F7 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D84DC71132C17E4004604F7 /* Quartz.framework */; };
 		4DCC87D8133C8A6F00C26C4D /* revcapture.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4DCC87D7133C8A6F00C26C4D /* revcapture.mm */; };
 		76CA35C8199CB72E00A73BC1 /* libcore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 76CA35C7199CB72E00A73BC1 /* libcore.a */; };
+		76EF06561A16508700A05561 /* qtsettingsdialog.mm in Sources */ = {isa = PBXBuildFile; fileRef = 76EF06551A16508700A05561 /* qtsettingsdialog.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +125,8 @@
 		4D8E58A60D92AFB80004D7E1 /* videograbber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = videograbber.h; path = src/videograbber.h; sourceTree = "<group>"; };
 		4DCC87D7133C8A6F00C26C4D /* revcapture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = revcapture.mm; path = src/revcapture.mm; sourceTree = "<group>"; };
 		76CA35C7199CB72E00A73BC1 /* libcore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcore.a; path = ../_build/mac/Debug/libcore.a; sourceTree = "<group>"; };
+		76EF06541A16508700A05561 /* qtsettingsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qtsettingsdialog.h; path = src/qtsettingsdialog.h; sourceTree = "<group>"; };
+		76EF06551A16508700A05561 /* qtsettingsdialog.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = qtsettingsdialog.mm; path = src/qtsettingsdialog.mm; sourceTree = "<group>"; };
 		B55AFA190BCE905300E1F7F0 /* libexternal.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libexternal.xcodeproj; path = ../libexternal/libexternal.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B55AFA270BCE906200E1F7F0 /* revvideograbber-Info.plist */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = text.plist.xml; name = "revvideograbber-Info.plist"; path = "rsrc/revvideograbber-Info.plist"; sourceTree = "<group>"; };
 		E88527781704978F00CEFCC5 /* dsDlgFunc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = dsDlgFunc.cpp; path = src/dsDlgFunc.cpp; sourceTree = "<group>"; };
@@ -227,6 +230,8 @@
 				E885277E1704978F00CEFCC5 /* mcivideograbber.cpp */,
 				E885277F1704978F00CEFCC5 /* mcivideograbber.h */,
 				4D8E58A60D92AFB80004D7E1 /* videograbber.h */,
+				76EF06541A16508700A05561 /* qtsettingsdialog.h */,
+				76EF06551A16508700A05561 /* qtsettingsdialog.mm */,
 				4D81C48E0D7824F4004EC824 /* qtvideograbber.cpp */,
 				4D81C48F0D7824F4004EC824 /* qtvideograbber.h */,
 				4D004BA60BCF765200A70446 /* revvideograbber.cpp */,
@@ -275,6 +280,8 @@
 /* Begin PBXProject section */
 		4D6758CF0A79F96300FA96D2 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = 4D6758D00A79F96300FA96D2 /* Build configuration list for PBXProject "revvideograbber" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -395,6 +402,7 @@
 			files = (
 				4D004DDC0BCF8FC500A70446 /* revvideograbber.cpp in Sources */,
 				4D81C4900D7824F4004EC824 /* qtvideograbber.cpp in Sources */,
+				76EF06561A16508700A05561 /* qtsettingsdialog.mm in Sources */,
 				4D75BF1712FB597600C2C8E6 /* qtxvideograbber.mm in Sources */,
 				4D84DA1E132BA4EB004604F7 /* qtxcapture.mm in Sources */,
 				4D57DF9E133A30440044FFEC /* rrecapture.m in Sources */,
