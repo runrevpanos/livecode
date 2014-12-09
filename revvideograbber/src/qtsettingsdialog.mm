@@ -37,7 +37,7 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 -(void) windowWillClose: (NSNotification *)notification;
 -(void) windowDidResize:(NSNotification *)notification;
 
--(bool) setSource: (UInt32) index;
+-(bool) setSource: (NSInteger) index;
 -(void) openSettings;
 
 //-(void) changeColor:(id)sender;
@@ -60,10 +60,15 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
     m_finished = false;
     
     // Create the buttons
-    m_ok_button = [[NSButton alloc] init];
-    m_settings_button = [[NSButton alloc] init];
-    m_mute_checkbox = [[NSButton alloc] init];
-    m_input_list_popup = [[NSPopUpButton alloc] init];
+    NSRect t_ok_button_rect =  { { 600,600 }, {100, 100}};
+    NSRect t_settings_button_rect =  { { 400,600 }, {100, 100}};
+    NSRect t_mute_checkbox_rect =  { { 200,600 }, {100, 100}};
+    NSRect t_input_list_popup_rect =  { { 0,600 }, {100, 100}};
+    
+    m_ok_button = [[NSButton alloc] initWithFrame:t_ok_button_rect];
+    m_settings_button = [[NSButton alloc] initWithFrame:t_settings_button_rect];
+    m_mute_checkbox = [[NSButton alloc] initWithFrame:t_mute_checkbox_rect];
+    m_input_list_popup = [[NSPopUpButton alloc] initWithFrame:t_input_list_popup_rect];
     
     m_ok_button.bezelStyle = NSRoundedBezelStyle;
     m_ok_button.imagePosition = NSNoImage;
@@ -99,6 +104,7 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
     
     [[self contentView] addSubview: m_ok_button];
     [[self contentView] addSubview: m_settings_button];
+    [[self contentView] addSubview: m_mute_checkbox];
     [[self contentView] addSubview: m_input_list_popup];
     
     [self relayout];
@@ -108,9 +114,16 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 
 -(void)dealloc
 {
+    [m_ok_button removeFromSuperview];
     [m_ok_button release];
+    
+    [m_settings_button removeFromSuperview];
     [m_settings_button release];
+    
+    [m_input_list_popup removeFromSuperview];
     [m_input_list_popup release];
+    
+    [m_mute_checkbox removeFromSuperview];
     [m_mute_checkbox release];
     
     [super dealloc];
@@ -131,18 +144,24 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 
 //////////
 
-- (bool) setSource: (UInt32)index
+- (bool) setSource: (NSInteger)index
 {
     NSArray *t_input_list = nil;
+    // TODO: Throws an exception
     QTGetComponentProperty(m_channel, kQTPropertyClass_SGAudioRecordDevice, kQTSGAudioPropertyID_InputListWithAttributes, sizeof(t_input_list), &t_input_list, NULL);
     
     if (t_input_list)
     {
+        NSLog(@"Count is ================= %d", t_input_list.count);
+        NSLog(@"Index is ================= %d", index);
+        // TODO An uncaught exception was raised -[__NSArrayM objectAtIndex:]: index 1 beyond bounds [0 .. 0]
+
         NSDictionary *t_dict = [t_input_list objectAtIndex:index];
         unsigned int t_id = [(NSNumber*)[t_dict objectForKey:(id)kQTAudioDeviceAttribute_DeviceInputID] unsignedIntValue];
         
         return noErr == QTSetComponentProperty(m_channel, kQTPropertyClass_SGAudioRecordDevice, kQTSGAudioPropertyID_InputSelection, sizeof(t_id), &t_id);
     }
+    
 }
 
 - (void) openSettings
@@ -234,11 +253,13 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 -(void) pickerOkClicked
 {
     m_finished = true;
+    
+    [self close];
 }
 
--(void) pickerSourceSelected
+-(void) pickerSourceClicked
 {
-    UInt32 index = [m_input_list_popup indexOfSelectedItem];
+    int index = [m_input_list_popup indexOfSelectedItem];
     [self setSource:index];
 }
 
@@ -260,7 +281,13 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 
 void CQTVideoGrabberOpenDialog(SGChannel *channel)
 {
-    [NSApp runModalForWindow: [[com_runrev_livecode_MCAudioSettingsPanel alloc] initWithChannel:channel]];
+    //[NSApp runModalForWindow: [[com_runrev_livecode_MCAudioSettingsPanel alloc] initWithChannel:channel]];
+    NSWindow *t_window = [[com_runrev_livecode_MCAudioSettingsPanel alloc] initWithChannel:channel];
+    [t_window setBackgroundColor:[NSColor blueColor]];
+    [t_window makeKeyAndOrderFront:NSApp];
+    //[NSApp runModalForWindow: t_window];
+    //[t_window makeKeyAndOrderFront:t_window];
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////
