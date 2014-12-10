@@ -52,7 +52,7 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 
 -(id) initWithChannel: (SGChannel *) p_channel
 {
-    NSRect t_rect =  { { 600,600 }, {1000, 1000}};
+    NSRect t_rect =  { { 600,600 }, {400, 25}};
     self = [super initWithContentRect: t_rect styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
 
     m_channel = *p_channel;
@@ -60,10 +60,11 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
     m_finished = false;
     
     // Create the buttons
-    NSRect t_ok_button_rect =  { { 600,600 }, {100, 100}};
-    NSRect t_settings_button_rect =  { { 400,600 }, {100, 100}};
-    NSRect t_mute_checkbox_rect =  { { 200,600 }, {100, 100}};
-    NSRect t_input_list_popup_rect =  { { 0,600 }, {100, 100}};
+    NSView *t_view = [self contentView];
+    NSRect t_ok_button_rect =  { { t_view.bounds.origin.x,t_view.bounds.origin.y }, {100, 25}};
+    NSRect t_settings_button_rect =  { { t_view.bounds.origin.x + 100,t_view.bounds.origin.y }, {100, 25}};
+    NSRect t_mute_checkbox_rect =  { { t_view.bounds.origin.x + 200,t_view.bounds.origin.y }, {100, 25}};
+    NSRect t_input_list_popup_rect =  { { t_view.bounds.origin.x + 300,t_view.bounds.origin.y }, {100, 25}};
     
     m_ok_button = [[NSButton alloc] initWithFrame:t_ok_button_rect];
     m_settings_button = [[NSButton alloc] initWithFrame:t_settings_button_rect];
@@ -98,9 +99,15 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
         }
     }
 
-    [m_input_list_popup setTitle: @"Input Source"];
+    //[m_input_list_popup setTitle: @"Input Source"];
     [m_input_list_popup setAction:@selector(pickerSourceClicked)];
     [m_input_list_popup setTarget:self];
+    
+    m_mute_checkbox.bezelStyle = NSRoundedBezelStyle;
+    m_mute_checkbox.imagePosition = NSNoImage;
+    [m_mute_checkbox setTitle: @"Mute"];
+    [m_mute_checkbox setAction:@selector(mutePreview)];
+    [m_mute_checkbox setTarget:self];
     
     [[self contentView] addSubview: m_ok_button];
     [[self contentView] addSubview: m_settings_button];
@@ -283,7 +290,7 @@ void CQTVideoGrabberOpenDialog(SGChannel *channel)
 {
     //[NSApp runModalForWindow: [[com_runrev_livecode_MCAudioSettingsPanel alloc] initWithChannel:channel]];
     NSWindow *t_window = [[com_runrev_livecode_MCAudioSettingsPanel alloc] initWithChannel:channel];
-    [t_window setBackgroundColor:[NSColor blueColor]];
+    //[t_window setBackgroundColor:[NSColor blueColor]];
     [t_window makeKeyAndOrderFront:NSApp];
     //[NSApp runModalForWindow: t_window];
     //[t_window makeKeyAndOrderFront:t_window];
