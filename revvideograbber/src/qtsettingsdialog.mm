@@ -159,10 +159,6 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
     
     if (t_input_list)
     {
-        NSLog(@"Count is ================= %d", t_input_list.count);
-        NSLog(@"Index is ================= %d", index);
-        // TODO An uncaught exception was raised -[__NSArrayM objectAtIndex:]: index 1 beyond bounds [0 .. 0]
-
         NSDictionary *t_dict = [t_input_list objectAtIndex:index];
         unsigned int t_id = [(NSNumber*)[t_dict objectForKey:(id)kQTAudioDeviceAttribute_DeviceInputID] unsignedIntValue];
         
@@ -288,13 +284,8 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 
 void CQTVideoGrabberOpenDialog(SGChannel *channel)
 {
-    //[NSApp runModalForWindow: [[com_runrev_livecode_MCAudioSettingsPanel alloc] initWithChannel:channel]];
     NSWindow *t_window = [[com_runrev_livecode_MCAudioSettingsPanel alloc] initWithChannel:channel];
-    //[t_window setBackgroundColor:[NSColor blueColor]];
     [t_window makeKeyAndOrderFront:NSApp];
-    //[NSApp runModalForWindow: t_window];
-    //[t_window makeKeyAndOrderFront:t_window];
-    
 }
 
 ////////////////////////////////////////////////////////////////////////////////
