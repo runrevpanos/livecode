@@ -692,10 +692,10 @@ private command revCreateStandalone pStack, pFolder
       
       // IM-2015-10-14: [[ BrowserWidget ]] Copy CEF files needed for the browser widget.
       // IM-2014-03-20: [[ revBrowserCEF ]] Ensure CEF support files are copied if requested
-      local tRevBrowser, tLibBrowser
+      // PM-2016-02-17: [[ Bug 16942 ]] No need to copy CEF support files when using browser widget, since now it uses a WebView rather than Chromium
+      local tRevBrowser
       put "Browser (CEF)" is among the lines of sStandaloneSettingsA["scriptLibraries"] into tRevBrowser
-      put "com.livecode.widget.browser" is among the lines of sStandaloneSettingsA["extensions"] into tLibBrowser
-      revCopyCEFResources tPlatform, tStandalonePath[tPlatform], tRevBrowser, tLibBrowser
+      revCopyCEFResources tPlatform, tStandalonePath[tPlatform], tRevBrowser
       
       revBuildStandaloneDeploy tPlatform, tArchitectures, tStackSourceFile[tPlatform], tEngineSourceFile[tPlatform], tStandalonePath[tPlatform]
       
@@ -1978,8 +1978,8 @@ private command revCopyModule pPlatform, pModuleName, pSourceFile, pSourceFolder
    revAddMapping pPlatform, pModuleName, tTargetModule
 end revCopyModule
 
-private command revCopyCEFResources pPlatform, pStandalonePath, pCopyRevBrowserResources, pCopyLibBrowserResources
-   if not (pCopyRevBrowserResources or pCopyLibBrowserResources) then
+private command revCopyCEFResources pPlatform, pStandalonePath, pCopyRevBrowserResources
+   if not pCopyRevBrowserResources then
       // No CEF resources required
       exit revCopyCEFResources
    end if
@@ -2014,11 +2014,7 @@ private command revCopyCEFResources pPlatform, pStandalonePath, pCopyRevBrowserR
             put "revbrowser-cefprocess EH.app" & return after tHelpers
             put "revbrowser-cefprocess NP.app" & return after tHelpers
          end if
-         if pCopyLibBrowserResources then
-            put "libbrowser-cefprocess.app" & return after tHelpers
-            put "libbrowser-cefprocess EH.app" & return after tHelpers
-            put "libbrowser-cefprocess NP.app" & return after tHelpers
-         end if
+         
          repeat for each line tHelper in tHelpers
             revSBCopyFolderToDestination tCefResources & slash & tHelper, tCEFFramework, "revStandaloneProgressCallback", the long id of me
             if the result is not empty then
@@ -2044,9 +2040,7 @@ private command revCopyCEFResources pPlatform, pStandalonePath, pCopyRevBrowserR
          if pCopyRevBrowserResources then
             put "revbrowser-cefprocess.exe" & return after tCEFFiles
          end if
-         if pCopyLibBrowserResources then
-            put "libbrowser-cefprocess.exe" & return after tCEFFiles
-         end if
+       
          repeat for each line tCEFFile in tCEFFiles
             revSBCopyFileToFolder tCefResources & slash & tCEFFile, tCEFDest, "revStandaloneProgressCallback", the long id of me
             if the result is not empty then
@@ -2091,10 +2085,7 @@ private command revCopyCEFResources pPlatform, pStandalonePath, pCopyRevBrowserR
          if pCopyRevBrowserResources then
             put "revbrowser-cefprocess" & return after tCEFFiles
          end if
-         if pCopyLibBrowserResources then
-            put "libbrowser-cefprocess" & return after tCEFFiles
-         end if
-         
+        
          repeat for each line tCEFFile in tCEFFiles
             revSBCopyFileToFolder tCefResources & slash & tCEFFile, tCurrentLocation, "revStandaloneProgressCallback", the long id of me
             if the result is not empty then
