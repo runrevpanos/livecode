@@ -2870,6 +2870,27 @@ Exec_stat MCHandleDeviceScale(void *context, MCParameter *p_parameters)
     return ES_ERROR;
 }
 
+Exec_stat MCHandleDeviceSafeArea(void *context, MCParameter *p_parameters)
+{
+    MCExecContext ctxt(nil, nil, nil);
+    
+    MCRectangle t_safe_area;
+    
+    MCMiscGetDeviceSafeArea(ctxt, t_safe_area);
+    
+    if (!ctxt.HasError())
+    {
+        MCAutoStringRef t_result;
+        MCStringFormat(&t_result, "%d,%d,%d,%d", t_safe_area.x, t_safe_area.y, t_safe_area.x + t_safe_area.width, t_safe_area.y + t_safe_area.height);
+        
+        ctxt.SetTheResultToValue(*t_result);
+        return ES_NORMAL;
+    }
+    
+    ctxt.SetTheResultToEmpty();
+    return ES_ERROR;
+}
+
 Exec_stat MCHandlePixelDensity(void* context, MCParameter* p_parameters)
 {
     MCExecContext ctxt(nil, nil, nil);
@@ -4668,6 +4689,7 @@ static const MCPlatformMessageSpec s_platform_messages[] =
 	{false, "iphoneDeviceResolution", MCHandleDeviceResolution, nil},
 	{false, "iphoneUseDeviceResolution", MCHandleUseDeviceResolution, nil},
 	{false, "iphoneDeviceScale", MCHandleDeviceScale, nil},
+    {false, "iphoneSafeArea", MCHandleDeviceSafeArea, nil},
     {false, "mobileDeviceResolution", MCHandleDeviceResolution, nil},
     {false, "mobileUseDeviceResolution", MCHandleUseDeviceResolution, nil},
     {false, "mobileDeviceScale", MCHandleDeviceScale, nil},

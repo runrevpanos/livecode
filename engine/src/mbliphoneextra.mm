@@ -37,6 +37,7 @@ along with LiveCode.  If not see <http://www.gnu.org/licenses/>.  */
 #include "text.h"
 #include "card.h"
 #include "osspec.h"
+#include "graphics_util.h"
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIGraphics.h>
@@ -564,6 +565,22 @@ bool MCSystemSetDeviceUseResolution(bool p_use_device_res, bool p_use_control_de
     MCIPhoneUseDeviceResolution(p_use_control_device_res, p_use_control_device_res);
     
     return true;
+}
+
+static inline MCRectangle MCRectangleFromCGRect(const CGRect &p_rect)
+{
+	return MCRectangleMake(p_rect.origin.x, p_rect.origin.y, p_rect.size.width, p_rect.size.height);
+}
+
+bool MCSystemGetDeviceSafeArea(MCRectangle& r_safe_area)
+{
+	CGRect t_safe_area_cgrect = [MCIPhoneGetApplication() fetchSafeAreaBounds];
+	
+	MCRectangle t_safe_area = MCRectangleFromCGRect(t_safe_area_cgrect);
+	
+	r_safe_area = t_safe_area;
+	
+	return true;
 }
 
 bool MCSystemGetDeviceScale(real64_t& r_scale)

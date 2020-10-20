@@ -4017,6 +4017,7 @@ void MCMiscExecVibrate(MCExecContext& ctxt, int32_t* p_number_of_times);
 void MCMiscGetDeviceResolution(MCExecContext& ctxt, MCStringRef& r_resolution);
 void MCMiscSetUseDeviceResolution(MCExecContext& ctxt, bool p_use_device_res, bool p_use_control_device_res);
 void MCMiscGetDeviceScale(MCExecContext& ctxt, real64_t& r_scale);
+void MCMiscGetDeviceSafeArea(MCExecContext& ctxt, MCRectangle& r_safe_area);
 void MCMiscGetPixelDensity(MCExecContext& ctxt, real64_t& r_density);
 
 void MCMiscSetStatusBarStyle(MCExecContext& ctxt, intenum_t p_style);

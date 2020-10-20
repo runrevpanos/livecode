@@ -434,6 +434,7 @@ bool MCSystemGetDeviceResolution(MCStringRef& p_resolution);
 bool MCSystemGetPixelDensity(real64_t& r_density);
 bool MCSystemSetDeviceUseResolution(bool p_use_device_res, bool p_use_control_device_res);
 bool MCSystemGetDeviceScale(real64_t& r_scale);
+bool MCSystemGetDeviceSafeArea(MCRectangle& r_safe_area);
 
 bool MCSystemSetStatusBarStyle(intenum_t p_style);
 bool MCSystemShowStatusBar();

@@ -986,6 +986,30 @@ void MCiOSFilePostProtectedDataUnavailableEvent();
 	return CGRectMake(0.0f, t_status_bar_size, t_viewport . size . width, t_viewport . size . height - t_status_bar_size);
 }
 
+- (CGRect)fetchSafeAreaBounds
+{
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000
+    if (@available(iOS 11.0, *))
+    {
+        CGRect t_viewport;
+        t_viewport = [[UIScreen mainScreen] bounds];
+        
+        UIWindow *t_window = [[UIApplication sharedApplication] windows][0];
+        CGFloat t_top_padding = t_window.safeAreaInsets.top;
+        CGFloat t_bottom_padding = t_window.safeAreaInsets.bottom;
+        
+        CGFloat t_status_bar_size;
+        if (m_status_bar_hidden || (MCmajorosversion >= 700 && !m_status_bar_solid)|| ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && m_status_bar_style == UIStatusBarStyleBlackTranslucent))
+            t_status_bar_size = 0.0f;
+        else
+            t_status_bar_size = 20.0f;
+        
+        return CGRectMake(0.0f, t_top_padding + t_status_bar_size, t_viewport . size . width, t_viewport . size . height - t_top_padding - t_bottom_padding - t_status_bar_size);        
+    }
+#endif
+    return self.fetchViewBounds;
+}
+
 - (UIInterfaceOrientation)fetchOrientation
 {
 	// During startup, the orientation is that of the startup controller.
@@ -1862,6 +1886,11 @@ UIInterfaceOrientation MCIPhoneGetOrientation(void)
 CGRect MCIPhoneGetViewBounds(void)
 {
 	return [[MCIPhoneApplication sharedApplication] fetchViewBounds];
+}
+
+CGRect MCIPhoneGetSafeAreaBounds(void)
+{
+    return [[MCIPhoneApplication sharedApplication] fetchSafeAreaBounds];
 }
 
 CGRect MCIPhoneGetScreenBounds(void)

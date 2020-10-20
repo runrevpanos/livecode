@@ -661,6 +661,12 @@ bool MCSystemGetDeviceResolution(MCStringRef& p_resolution)
     return false;
 }
 
+bool MCSystemGetDeviceSafeArea(MCRectangle& r_safe_area)
+{
+	//not implemented on Android
+	   return false;
+}
+
 bool MCSystemSetDeviceUseResolution(bool p_use_device_res, bool p_use_control_device_res)
 {
     //not implemented on Android

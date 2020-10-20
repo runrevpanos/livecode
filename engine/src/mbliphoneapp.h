@@ -204,6 +204,9 @@ enum MCIPhoneKeyboardDisplayMode
 // Returns the current view bounds in logical units - taking into account the
 // current orientation and status bar state.
 - (CGRect)fetchViewBounds;
+// Returns the current safe area bounds in logical units - taking into account the
+// current orientation and status bar state.
+- (CGRect)fetchSafeAreaBounds;
 // Returns the current orientation of the screen.
 - (UIInterfaceOrientation)fetchOrientation;
 
@@ -389,6 +392,7 @@ UIView *MCIPhoneGetView(void);
 UIView *MCIPhoneGetRootView(void);
 UIView *MCIPhoneGetDisplayView(void);
 CGRect MCIPhoneGetViewBounds(void);
+CGRect MCIPhoneGetSafeAreaBounds(void);
 CGRect MCIPhoneGetScreenBounds(void);
 void MCIPhoneActivateKeyboard(void);
 void MCIPhoneDeactivateKeyboard(void);

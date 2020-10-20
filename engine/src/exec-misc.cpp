@@ -125,6 +125,14 @@ void MCMiscSetUseDeviceResolution(MCExecContext& ctxt, bool p_use_device_res, bo
     ctxt.Throw();
 }
 
+void MCMiscGetDeviceSafeArea(MCExecContext& ctxt, MCRectangle& r_safe_area)
+{
+    if(MCSystemGetDeviceSafeArea(r_safe_area))
+        return;
+    
+    ctxt.Throw();
+}
+
 void MCMiscGetDeviceScale(MCExecContext& ctxt, real64_t& r_scale)
 {
     if(MCSystemGetDeviceScale(r_scale))
