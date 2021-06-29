@@ -160,7 +160,7 @@ public class AmazonBillingProvider implements BillingProvider
     }
 
     
-    public boolean confirmDelivery(int purchaseId)
+    public boolean confirmDelivery(String productID)
     {
         if (!started)
             return false;

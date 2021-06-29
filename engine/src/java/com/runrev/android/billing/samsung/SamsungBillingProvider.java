@@ -538,7 +538,7 @@ public class SamsungBillingProvider implements BillingProvider
         return ownedItems.toString();
     }
 
-    public boolean confirmDelivery(int purchaseId)
+    public boolean confirmDelivery(String productId)
     {
         if (!started)
             return false;

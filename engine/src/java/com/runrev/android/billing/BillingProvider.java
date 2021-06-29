@@ -58,7 +58,7 @@ public interface BillingProvider
     String getPurchaseList();
     
     // Notify the store that the item has been delivered
-    boolean confirmDelivery(int purchaseId);
+    boolean confirmDelivery(String productId);
     
     // Register an observer for any updates to purchase requests
     void setPurchaseObserver(PurchaseObserver observer);

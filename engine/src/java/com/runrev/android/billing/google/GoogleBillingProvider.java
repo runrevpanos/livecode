@@ -22,10 +22,13 @@ public class GoogleBillingProvider implements BillingProvider
     private PurchaseObserver mPurchaseObserver;
     private Map<String,String> types = new HashMap<String,String>();
     private Map<String,Map<String,String>> itemProps = new HashMap<String, Map<String,String>>();
+    
+    private Map<String,Purchase> purchasesMap = new HashMap<String,Purchase>();
 	
 	private List<SkuDetails> knownItems = new ArrayList<SkuDetails>();
     private Set<String> ownedItems = new HashSet<String>();
     
+    private SkuDetails mSkuDetails;
     /* 
      Temp var for holding the productId, to pass it in onIabPurchaseFinished(IabResult result, Purchase purchase), in case purchase is null.
      Thus, purchase.getSku() will not work
@@ -38,8 +41,31 @@ public class GoogleBillingProvider implements BillingProvider
     // The helper object
     IabHelper mHelper = null;
     
+    
+    
+    private AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
+        @Override
+        public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
+            // Do stuff when purchase is acknowledged
+            Log.d(TAG, "Purchase acknowledged");
+        }
+    };
+    
+    private PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
+        @Override
+        public void onPurchasesUpdated(BillingResult billingResult, List<Purchase> purchases) {
+        // To be implemented in a later section.
+        }
+    };
+    
+    private BillingClient billingClient = BillingClient.newBuilder(activity)
+    .setListener(purchasesUpdatedListener)
+    .enablePendingPurchases()
+    .build();
+    
     public void initBilling()
     {
+        /*
         String t_public_key = Engine.doGetCustomPropertyValue("cREVStandaloneSettings", "android,storeKey");
         
         if (t_public_key != null && t_public_key.length() > 0)
@@ -77,55 +103,103 @@ public class GoogleBillingProvider implements BillingProvider
                 //mHelper.queryInventoryAsync(mGotInventoryListener);
             }
         });
+         */
+        billingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(BillingResult billingResult) {
+                if (billingResult.getResponseCode() ==  BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                }
+            }
+            @Override
+            public void onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+            }
+        });
+        
     }
 	
 	public void onDestroy()
 	{
+        /*
 		if (mHelper != null)
             mHelper.dispose();
         mHelper = null;
+         */
 	}
     
     public boolean canMakePurchase()
     {
+        /*
         if (mHelper == null)
             return false;
 	
         else
             return mHelper.is_billing_supported;
+         */
+        return true;
     }
     
     public boolean enableUpdates()
     {
+        /*
         if (mHelper == null)
             return false;
-        
+        */
         return true;
     }
     
     public boolean disableUpdates()
     {
+        /*
         if (mHelper == null)
             return false;
-        
+        */
 		return true;
     }
     
     public boolean restorePurchases()
     {
-        if (mHelper == null)
-		{
+        if (billingClient == null)
 			return false;
-		}
-         
-		Log.d(TAG, "Querying inventory.");
-		mHelper.queryInventoryAsync(mGotInventoryListener);
-         
+
+        billingClient.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP, new PurchasesResponseListener() {
+            @Override
+            public void onPurchaseResponse(int responseCode, List<Purchase> purchases)
+            {
+                if (responseCode == BillingClient.BillingResponse.OK && purchases != null)
+                {
+                    boolean t_did_restore;
+                    t_did_restore = false;
+
+                    for (Purchase purchase : purchases)
+                    {
+                        addPurchaseToLocalInventory(purchase);
+                        ownedItems.add(purchase.getSku());
+                        // onPurchaseStateChanged to be called with state = 5 (restored)
+                        mPurchaseObserver.onPurchaseStateChanged(purchase.getSku(), 5);
+                        t_did_restore = true;
+                    }
+
+                    if(!t_did_restore)
+                    {
+                        // PM-2015-02-12: [[ Bug 14402 ]] When there are no previous purchases to restore, send a purchaseStateUpdate msg with state=restored and productID=""
+                        mPurchaseObserver.onPurchaseStateChanged("",5);
+                    }
+                }
+                else
+                {
+                    Log.d(TAG, "Failed to restore purchases.");
+                }
+            }
+        });
         return true;
     }
     
     public boolean sendRequest(int purchaseId, String productId, String developerPayload)
     {
+        /*
         if (mHelper == null)
             return false;
         
@@ -155,7 +229,113 @@ public class GoogleBillingProvider implements BillingProvider
 			Log.i(TAG, "Item type is not recognized. Exiting..");
             return false;
 		}
+         */
+
+        if (billingClient == null)
+            return false;
         
+        String type = productGetType(productId);
+        if (type == null)
+        {
+            Log.i(TAG, "Item type is null (not specified). Exiting..");
+            return false;
+        }
+        
+        pendingPurchaseSku = productId;
+        
+        Log.i(TAG, "purchaseSendRequest(" + purchaseId + ", " + productId + ", " + type + ")");
+        
+        
+        String skuToSell = productId;
+        List<String> skuList = new ArrayList<> ();
+        skuList.add(skuToSell);
+        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+        
+        if (type.equals("inapp"))
+            params.setSkusList(skuList).setType(SkuType.INAPP);
+        else
+            params.setSkusList(skuList).setType(SkuType.SUBS);
+        
+        billingClient.querySkuDetailsAsync(params.build(),
+                                           new SkuDetailsResponseListener() {
+            @Override
+            public void onSkuDetailsResponse(BillingResult billingResult,
+                                             List<SkuDetails> skuDetailsList) {
+                // Process the result.
+                int responseCode = billingResult.getResponseCode();
+                String debugMessage = billingResult.getDebugMessage();
+                switch (responseCode) {
+                    case BillingClient.BillingResponseCode.OK:
+                        Log.i(TAG, "onSkuDetailsResponse: " + responseCode + " " + debugMessage);
+                        if (skuDetailsList == null || skuDetailsList.isEmpty())
+                        {
+                            Log.e(TAG, "onSkuDetailsResponse: " +
+                                  "Found null or empty SkuDetails. " +
+                                  "Check to see if the SKUs you requested are correctly published " +
+                                  "in the Google Play Console.");
+                        }
+                        else
+                        {
+                            for (SkuDetails skuDetails : skuDetailsList)
+                            {
+                                String sku = skuDetails.getSku();
+                                
+                                if (sku.equals(productId))
+                                {
+                                    mSkuDetails = skuDetails;
+                                }
+                                
+                            }
+                        }
+                        break;
+                    case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
+                    case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
+                    case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
+                    case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
+                    case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
+                    case BillingClient.BillingResponseCode.ERROR:
+                        Log.e(TAG, "onSkuDetailsResponse: " + responseCode + " " + debugMessage);
+                        break;
+                    case BillingClient.BillingResponseCode.USER_CANCELED:
+                        Log.i(TAG, "onSkuDetailsResponse: " + responseCode + " " + debugMessage);
+                        break;
+                        // These response codes are not expected.
+                    case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
+                    case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
+                    case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
+                    default:
+                        Log.wtf(TAG, "onSkuDetailsResponse: " + responseCode + " " + debugMessage);
+                }
+            }
+        });
+        
+        // An activity reference from which the billing flow will be launched.
+        Activity activity = getActivity();
+        
+        // Retrieve a value for "skuDetails" by calling querySkuDetailsAsync().
+        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder().setSkuDetails(mSkuDetails).build();
+        
+        int responseCode = billingClient.launchBillingFlow(activity, billingFlowParams).getResponseCode();
+        
+        // Handle the result.
+        
+        /*
+        if (type.equals("subs"))
+        {
+            mHelper.launchSubscriptionPurchaseFlow(getActivity(), productId, RC_REQUEST, mPurchaseFinishedListener, developerPayload);
+            return true;
+        }
+        else if (type.equals("inapp"))
+        {
+            mHelper.launchPurchaseFlow(getActivity(), productId, RC_REQUEST, mPurchaseFinishedListener, developerPayload);
+            return true;
+        }
+        else
+        {
+            Log.i(TAG, "Item type is not recognized. Exiting..");
+            return false;
+        }
+         */
     }
     
     public boolean makePurchase(String productId, String quantity, String payload)
@@ -208,6 +388,10 @@ public class GoogleBillingProvider implements BillingProvider
     
     public boolean consumePurchase(final String productId)
     {
+        Purchase purchase = getPurchaseFromMap(productId);
+        handleConsumablePurchase(purchase);
+        return true;
+        /*
         mHelper.queryInventoryAsync(new IabHelper.QueryInventoryFinishedListener()
                                     {
             @Override
@@ -232,6 +416,7 @@ public class GoogleBillingProvider implements BillingProvider
             }
         });
         return true;
+         */
     }
     
     public boolean requestProductDetails(final String productId)
@@ -287,13 +472,18 @@ public class GoogleBillingProvider implements BillingProvider
         return "Product ID not found";
 	}
     
-    public boolean confirmDelivery(int purchaseId)
+    public boolean confirmDelivery(String productId)
     {
+        /*
         if (mHelper == null)
             return false;
         
         else
             return true;
+         */
+        Purchase purchase = getPurchaseFromMap(productId);
+        handleNonConsumablePurchase(purchase);
+        return true;
     }
     
     public void setPurchaseObserver(PurchaseObserver observer)
@@ -320,6 +510,28 @@ public class GoogleBillingProvider implements BillingProvider
                 
         return true;
     }
+        
+    public boolean addPurchaseToMap(String productId, Purchase purchase)
+    {
+        if (!purchasesMap.containsKey(productId))
+            purchasesMap.put(productId, purchase);
+        
+        return true;
+    }
+    
+    public Purchase getPurchaseFromMap(String productId)
+    {
+        if (!purchasesMap.containsKey(productId))
+            return null;
+            
+        return purchasesMap.get(productId);
+    }
+    
+    void removePurchaseFromMap(Purchase purchase)
+    {
+        purchasesMap.remove(purchase.getSku());
+    }
+    
     
     public String getPurchaseProperty(String productId, String propName)
     {
@@ -550,6 +762,78 @@ public class GoogleBillingProvider implements BillingProvider
         return true;
     }
 
+    @Override
+    void onPurchasesUpdated(BillingResult billingResult, List<Purchase> purchases)
+    {
+        // Maybe it needs BillingClient.BillingResponseCode.OK
+        if (billingResult.getResponseCode() == BillingResponseCode.OK
+            && purchases != null)
+        {
+            for (Purchase purchase : purchases)
+            {
+                //handleConsumablePurchase(purchase);
+                mPurchaseObserver.onPurchaseStateChanged(purchase.getSku(), mapResponseCode(billingResult.getResponseCode));
+            }
+        }
+        /*else if (billingResult.getResponseCode() == BillingResponseCode.USER_CANCELED)
+        {
+            // Handle an error caused by a user cancelling the purchase flow.
+        }*/
+        else
+        {
+            // Handle any other error codes.
+            mPurchaseObserver.onPurchaseStateChanged(pendingPurchaseSku, mapResponseCode(billingResult.getResponseCode));
+            pendingPurchaseSku = "";
+
+        }
+    }
+
+    void handleConsumablePurchase(Purchase purchase)
+    {
+        // Purchase retrieved from BillingClient#queryPurchasesAsync or your PurchasesUpdatedListener.
+        //Purchase purchase = ...;
+
+        //PANOS: Check type. If consumable, then consume. Otherwise acknowledge the purchase
+
+        // Verify the purchase.
+        // Ensure entitlement was not already granted for this purchaseToken.
+        // Grant entitlement to the user.
+
+        ConsumeParams consumeParams = ConsumeParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build();
+
+        ConsumeResponseListener listener = new ConsumeResponseListener() {
+            @Override
+            public void onConsumeResponse(BillingResult billingResult, String purchaseToken)
+            {
+                if (billingResult.getResponseCode() == BillingResponseCode.OK)
+                {
+                    // Handle the success of the consume operation.
+                }
+            }
+        };
+
+        billingClient.consumeAsync(consumeParams, listener);
+
+        Log.d(TAG, "Consuming purchase successful.");
+        pendingPurchaseSku = "";
+        removePurchaseFromMap(purchase);
+        removePurchaseFromLocalInventory(purchase);
+
+        //offerPurchasedItems(purchase);
+    }
+
+    void handleNonConsumablePurchase(Purchase purchase)
+    {
+        if (purchase.getPurchaseState() == PurchaseState.PURCHASED)
+        {
+            if (!purchase.isAcknowledged())
+            {
+                AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build();
+                billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+            }
+        }
+    }
+
     public void onActivityResult (int requestCode, int resultCode, Intent data)
     {
         Log.d(TAG, "onActivityResult(" + requestCode + "," + resultCode + "," + data);
@@ -569,22 +853,60 @@ public class GoogleBillingProvider implements BillingProvider
     // Should match the order of enum MCAndroidPurchaseState (mblandroidstore.cpp)
     int mapResponseCode(int responseCode)
     {
+        /*
+        BILLING_UNAVAILABLE
+        Billing API version is not supported for the type requested.
+
+        DEVELOPER_ERROR
+        Invalid arguments provided to the API.
+
+        ERROR
+        Fatal error during the API action.
+
+        FEATURE_NOT_SUPPORTED
+        Requested feature is not supported by Play Store on the current device.
+
+        ITEM_ALREADY_OWNED
+        Failure to purchase since item is already owned.
+
+        ITEM_NOT_OWNED
+        Failure to consume since item is not owned.
+
+        ITEM_UNAVAILABLE
+        Requested product is not available for purchase.
+
+        OK
+        Success.
+
+        SERVICE_DISCONNECTED
+        Play Store service is not connected now - potentially transient state.
+
+        SERVICE_TIMEOUT
+        The request has reached the maximum timeout before Google Play responds.
+
+        SERVICE_UNAVAILABLE
+        Network connection is down.
+
+        USER_CANCELED
+        User pressed back or canceled a dialog.
+        */
+
         int result;
         switch(responseCode)
         {
-            case IabHelper.BILLING_RESPONSE_RESULT_OK:
+            case BillingResponseCode.OK:
                 result = 0;
                 break;
 
-            case IabHelper.BILLING_RESPONSE_RESULT_USER_CANCELED:
+            case BillingResponseCode.USER_CANCELED:
                 result = 1;
                 break;
 
-			case IabHelper.BILLING_RESPONSE_RESULT_ITEM_UNAVAILABLE:
+			case BillingResponseCode.ITEM_UNAVAILABLE:
 				result = 2;
 				break;
 
-            case IabHelper.BILLING_RESPONSE_RESULT_ITEM_ALREADY_OWNED:
+            case BillingResponseCode.ITEM_ALREADY_OWNED:
                 result = 3;
                 break;
 

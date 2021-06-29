@@ -362,7 +362,7 @@ static bool purchase_confirm(MCPurchase *p_purchase)
     bool t_result = false;
     
     MCLog("confirming notification: purchaseId=%d, notificationId=%@", p_purchase->id, t_android_data->notification_id);
-    MCAndroidEngineRemoteCall("purchaseConfirmDelivery", "bix", &t_result, p_purchase->id, t_android_data->notification_id);
+    MCAndroidEngineRemoteCall("purchaseConfirmDelivery", "bxx", &t_result, t_android_data->product_id, t_android_data->notification_id);
     
     if (t_result)
     {

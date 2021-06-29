@@ -2690,12 +2690,12 @@ public class Engine extends View implements EngineApi
         return mBillingProvider.getPurchaseProperty(productId, propName);
     }
 
-	public boolean purchaseConfirmDelivery(int purchaseId, String notificationId)
+	public boolean purchaseConfirmDelivery(String productId, String notificationId)
 	{
 		if (mPurchaseObserver == null)
 			return false;
 
-		return mBillingProvider.confirmDelivery(purchaseId);
+		return mBillingProvider.confirmDelivery(productId);
 	}
 
     public String storeGetPurchaseList()
